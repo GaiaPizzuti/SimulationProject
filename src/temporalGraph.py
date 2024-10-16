@@ -194,6 +194,29 @@ def influence_maximization(filename: str, prob: float = PROB_OF_BEING_INFECTED):
             seed_set.append(find_seed_set(window)[0])
     return seed_set
 
+def get_random_seed_set(filename, number):
+    """
+    Function to create a random seed set of a given number of nodes
+
+    Args:
+        - filename: the name of the relative file's path containing the graph to analyze
+        - number: the number of nodes to select
+    """
+    
+    import random
+    
+    nodes = set()
+    
+    with open(filename, 'r') as file:
+        for line in file:
+            src, dst, _ = line.split()
+            
+            nodes.add(int(src))
+            nodes.add(int(dst))
+            
+    seed_set = random.sample(sorted(nodes), number)
+    return seed_set
+
 # ---------------------------- MAIN ----------------------------
 
 if __name__ == "__main__":

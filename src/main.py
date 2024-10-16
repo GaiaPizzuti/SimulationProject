@@ -1,6 +1,6 @@
 from copy import deepcopy
 import sys
-from temporalGraph import influence_maximization, spread_infection
+from temporalGraph import influence_maximization, spread_infection, get_random_seed_set
 from subTreeInfection import subtrees_methods
 from vsCentrality import centrality_analysis
 from comparison import result_comparison
@@ -22,9 +22,13 @@ def adversarial_attack_at_influence_maximization ():
     
     print('---- find seed set ----\n\n')
     
-    seed_set = influence_maximization(filename, prob_of_being_infected)
-    print('seed set:', seed_set)
+    if len(sys.argv) == 4:
+        seedset_budget = int(sys.argv[3])
+        seed_set = get_random_seed_set(filename, seedset_budget)
+    else:
+        seed_set = influence_maximization(filename, prob_of_being_infected)
     
+    print('seed set:', seed_set)
     
     print('\n\n---- simulate infection ----\n\n')
     test_seed_set = deepcopy(seed_set)
