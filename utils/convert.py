@@ -42,9 +42,9 @@ def convert(filepath):
 
         # new_file.write(str(src_id) + " " + str(dst_id) + " " + str(int(unixtime)) + "\n")
 
-        new_file.write(str(src) + " " + str(dst) + " " + "0" + "\n")
+        new_file.write(str(src_id) + " " + str(dst_id) + " " + "0" + "\n")
 
             
 
-convert("../../data/as19971108.txt")
+convert("/home/luca.cavalcanti/simulation/SimulationProject/data/cit-HepPh-pruned.txt")
 # convert("../../data/8m.txt")
