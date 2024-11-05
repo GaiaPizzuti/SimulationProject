@@ -3,14 +3,41 @@ file that define the subtrees_methods and all the functions used in it
 '''
 
 from collections import defaultdict
+import copy
 import random
 import igraph as ig
 from matplotlib import patches
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from operator import itemgetter
+from cc import Graph
 
-PROB_OF_BEING_INFECTED = 0.2
+PROB_OF_BEING_INFECTED = 0.8
+
+# ------------------------- class Tree -------------------------
+
+class Forest:
+    # constructor
+    def __init__(self):
+        # initialize adjacency list
+        self.adjacency_list = defaultdict(dict)
+        
+    def add_edge(self, src, dst):
+        if src not in self.adjacency_list:
+            self.adjacency_list[src] = dict()
+        if dst not in self.adjacency_list:
+            self.adjacency_list[dst] = dict()
+            
+        self.adjacency_list[src][dst] = None
+        self.adjacency_list[dst][src] = None
+    
+    def add_node(self, node):
+        if node not in self.adjacency_list:
+            self.adjacency_list[node] = dict()
+    
+    def get_adjacency_list(self):
+        return {k: list(v.keys()) for k, v in self.adjacency_list.items()}
+
 
 # ------------------------- class Node -------------------------
 
@@ -47,25 +74,7 @@ def print_tree(tree, spaces=0):
 
 # ------------------------- functions -------------------------
 
-def simulate_infection(seed_set : set, filename : str, plot : list[int], prob: float, removed_nodes=[]):
-    '''
-    simulate the infection of a graph
-    input: seed_set is the set of original infected nodes, filename is the name of the file containing the graph
-    output: the number of infected nodes
-    '''
-    
-    infected = set(seed_set)
-
-    # queue of tuples (src, state)
-    messages = defaultdict(list)
-
-    last_unixts = None
-    
-    split_char = ' '
-    if filename == 'data/fb-forum.txt':
-        split_char = ','
-
-    file = (row for row in open(filename, "r"))
+def infect_temporal_graph(infected : set[int], messages : dict[int, list[int]], last_unixts : int, split_char : str, file, prob: float, plot : list[int], removed_nodes=[]):
     filtered_edges = [(int(src), int(dst), int(unixts)) for src, dst, unixts in [line.split(split_char) for line in file] if int(src) not in removed_nodes and int(dst) not in removed_nodes]
     for src, dst, unixts in filtered_edges:
 
@@ -91,6 +100,62 @@ def simulate_infection(seed_set : set, filename : str, plot : list[int], prob: f
     process_queue (messages, infected, prob)
     plot.append(len(infected))
     return infected
+    
+def infect_static_graph(infected : set[int], split_char : str, file, prob: float, plot : list[int], removed_nodes=[]):
+    filtered_edges = [(int(src), int(dst)) for src, dst, unixts in [line.split(split_char) for line in file] if int(src) not in removed_nodes and int(dst) not in removed_nodes]
+
+    static_graph = Graph()
+    infection_tree = Forest()
+    for src, dst in filtered_edges:
+        static_graph.add_edge(src, dst)
+                    
+    previous_infected = 0
+    while len(infected) != previous_infected:
+        previous_infected = len(infected)
+        new_infected = copy.deepcopy(infected)
+        for node in infected:
+            for neighbor in static_graph.adjacency_list[node]:
+                if neighbor not in infected:
+                    infection_result = random.uniform(0, 1)
+                    if infection_result <= prob:
+                        new_infected.add(neighbor)
+                        infection_tree.add_edge(node, neighbor)
+                        # print(f"Node {neighbor} infected by {node}")
+                        # print(f"Node {neighbor}'s adjacents: {infection_tree.adjacency_list[neighbor]}")
+                        # print(f"Node {node}'s adjacents: {infection_tree.adjacency_list[node]}\n")
+        infected = new_infected
+        
+    
+    plot.append(len(infected))
+    return infected, infection_tree
+
+def simulate_infection(seed_set : set, filename : str, plot : list[int], prob: float, removed_nodes=[]):
+    '''
+    simulate the infection of a graph
+    input: seed_set is the set of original infected nodes, filename is the name of the file containing the graph
+    output: the number of infected nodes
+    '''
+    
+    infected = set(seed_set)
+
+    # queue of tuples (src, state)
+    messages = defaultdict(list)
+
+    last_unixts = None
+    
+    split_char = ' '
+    if filename == 'data/fb-forum.txt':
+        split_char = ','
+
+    file = [row for row in open(filename, "r")]
+    
+    if int(file[0].split(split_char)[2]) == -1:
+        infected, infection_tree = infect_static_graph(infected, split_char, file, prob, plot, removed_nodes)
+    else:
+        infected = infect_temporal_graph(infected, messages, last_unixts, split_char, file, prob, plot, removed_nodes)
+    
+    
+    return infected
 
 def process_queue (messages : dict[int, list[int]], infected : set[int], prob: float):
     '''
@@ -114,26 +179,7 @@ def process_queue (messages : dict[int, list[int]], infected : set[int], prob: f
 
 # ------------------------- forward forest -------------------------
 
-def forward_forest (seed_set : set, filename : str, prob: float) -> list[Node]:
-    '''
-    Simulation of the infection to find the forest of the infection
-    input: seed_set is the set of original infected nodes, filename is the name of the file containing the graph
-    output: the forest of the infection
-    '''
-
-    # final forest of the infection
-    forest = list(Node(seed, -1) for seed in seed_set)
-    infected = set(seed_set)
-
-    # queue of tuples (src, state)
-    messages = defaultdict(list)
-
-    last_unixts = None
-    split_char = ' '
-    if filename == 'data/fb-forum.txt':
-        split_char = ','
-
-    file = (row for row in open(filename, "r"))
+def create_forest_temporal_graph(infected : set[int], messages : dict[int, list[tuple[int, int]]], forest : list[Node], last_unixts : int, split_char : str, file, prob: float) -> list[Node]:
     filtered_edges = [(int(src), int(dst), int(unixts)) for src, dst, unixts in [line.split(split_char) for line in file] if int(dst) not in seed_set]
 
     for src, dst, unixts in filtered_edges:
@@ -158,6 +204,38 @@ def forward_forest (seed_set : set, filename : str, prob: float) -> list[Node]:
 
     update_infection_tree (messages, infected, forest, last_unixts, prob) # type: ignore
     return forest
+
+def create_forest_static_graph(infected : set[int], split_char : str, file, prob: float):
+    infected, infection_tree = infect_static_graph(infected, split_char, file, prob, [])
+    
+    return infection_tree
+
+def forward_forest (seed_set : set, filename : str, prob: float):
+    '''
+    Simulation of the infection to find the forest of the infection
+    input: seed_set is the set of original infected nodes, filename is the name of the file containing the graph
+    output: the forest of the infection
+    '''
+
+    # final forest of the infection
+    forest = list(Node(seed, -1) for seed in seed_set)
+    infected = set(seed_set)
+
+    # queue of tuples (src, state)
+    messages = defaultdict(list)
+
+    last_unixts = None
+    split_char = ' '
+    if filename == 'data/fb-forum.txt':
+        split_char = ','
+
+    file = [row for row in open(filename, "r")]
+    if int(file[0].split(split_char)[2]) == -1:
+        return create_forest_static_graph(infected, split_char, file, prob), True
+    else:
+        return create_forest_temporal_graph(infected, messages, forest, last_unixts, split_char, file, prob), False
+    
+    
 
 def update_infection_tree (messages : dict[int, list[tuple[int, int]]], infected : set[int], forest : list[Node], unixts : int, prob: float):
     '''
@@ -250,6 +328,29 @@ def find_best_node (nodes : dict[int, int], budget : int) -> list[int]:
     return list(sorted_nodes.keys())[:budget]
 
 
+def sample_vrr_path(forest: Graph, seed_set: set[int]):
+    '''
+    function that samples a random path from the forest
+    input: forest is the forest of the infection
+    output: the path chosen
+    '''
+    # pick random node not in seed set
+    filtered_forest = [node for node in forest.adjacency_list.keys() if node not in seed_set]
+    if len(filtered_forest) == 0:
+        return []
+    
+    node = random.choice(filtered_forest)
+    
+    # find the path from the node to the root
+    path = []
+    while node not in seed_set:
+        # print("Retracing path from", node)
+        path.append(node)
+        node = list(dict.fromkeys(forest.adjacency_list[node]))[0] 
+        # print(f"Node {node}'s adjacents: {forest.adjacency_list[node]}")
+    return path
+    
+
 # ------------------------- forest visualization -------------------------
 
 def forest_visualization (infected: set[int], filename : str, fig : Figure, ax, removed_nodes=()):
@@ -322,15 +423,27 @@ def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob: float
     print(f"Infected nodes:", len(first_simulation))
     
     #forest_visualization (first_simulation, filename, fig, ax1)
-
+    
+    # initialize the list of vrr paths if the graph is static
+    vrr_paths = list()
+    
     for _ in range (times):
-        forest = forward_forest (seed_set, filename, prob)
+        forest, is_static = forward_forest (seed_set, filename, prob)
 
-        selected_node = choose_nodes (forest, seed_set, node_budget)
-        for node in selected_node:
-            removed_nodes[node] = removed_nodes[node] + 1
+        if not is_static:
+            selected_node = choose_nodes (forest, seed_set, node_budget)
+            for node in selected_node:
+                removed_nodes[node] = removed_nodes[node] + 1
+        else:
+            vrr_paths.append(sample_vrr_path(forest, seed_set))
 
-    selected_nodes = find_best_node (removed_nodes, node_budget)
+    if not is_static:
+        selected_nodes = find_best_node (removed_nodes, node_budget)
+    else:
+        # rank the nodes by the number of times they were selected and choose the top node_budget nodes
+        flat_vrr_paths = [node for path in vrr_paths for node in path]
+        selected_nodes = find_best_node ({node: flat_vrr_paths.count(node) for node in set(flat_vrr_paths)}, node_budget)
+        
     print(f"Selected nodes: {selected_nodes}")
 
     set_plot = list()
