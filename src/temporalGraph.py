@@ -1,4 +1,5 @@
 import random
+from numpy.random import SeedSequence, Generator, PCG64
 
 # creation of a graph from a file
 # data format -> src dst unixts
@@ -11,7 +12,16 @@ import random
 # the message will be stored in a queue per node
 # timestamp are ordered
 
-PROB_OF_BEING_INFECTED = 0.2
+PROB_OF_BEING_INFECTED = 0.3
+
+""" entropy = 0x87351080e25cb0fad77a44a3be03b491
+base_seq = SeedSequence(entropy)
+child_seqs = base_seq.spawn(LENGTH)    # a list of 12 SeedSequences
+# print(seq for seq in child_seqs)
+generators = [Generator(PCG64(seq)) for seq in child_seqs]
+
+rng = generators[0] """
+
 '''
 probability of not being infected: (1 - PROB_OF_BEING_INFECTED)^(number_of_infected_messages)
 '''
@@ -97,9 +107,13 @@ def create_temporal_windows(filename, window_size=1000):
 
 def spread_infection(seed, filename, prob: float):
     '''
-    Spread the infection in the temporal network
-    Input: seed is the seed set, filename is the name of the file
-    Output: number of infected nodes
+    Function to simulate the spread of an infection in a temporal graph
+    Input:
+        - seed: the seed set
+        - filename: name of the file
+        - prob: probability of being infected
+    Output:
+        - number of infected nodes
     '''
     
     list_queue = []
@@ -111,6 +125,7 @@ def spread_infection(seed, filename, prob: float):
             split_char = ','
         for line in f:
             src, dst, unixts = line.split(split_char)
+            # controllo 2 o 3 
             src, dst, unixts = int(src), int(dst), int(unixts)
             
             # if the source of the message is infected, the message is infected too
@@ -122,6 +137,7 @@ def spread_infection(seed, filename, prob: float):
             # check if the last_unixts is none or equal to unixts
             # if is equal, we'll continue to add element on the queue
             # if is None or different, clear the queue
+            # if 3
             if last_unixts != None and last_unixts != unixts:
                 current_node = 0
                 
@@ -135,6 +151,7 @@ def spread_infection(seed, filename, prob: float):
                             
                         # probability of not being infected is equal to (1 - PROB_OF_BEING_INFECTED)^(INFECTED_MESSAGES)
                         infected_messages = sum(list)
+                        # MAKE IT ZERO
                         prob_of_not_being_infected = pow((1 - prob), infected_messages)
                         result_infection = random.uniform(0, 1)
                         # if the obtained result is greater than the probability of not being infected then the nose is infected
@@ -157,6 +174,10 @@ def spread_infection(seed, filename, prob: float):
                 list_queue[dst] = queue 
             
             last_unixts = unixts
+            
+            # if 2
+            # for N
+            # SPREAD INFECTION
     
     return len(infected)
 

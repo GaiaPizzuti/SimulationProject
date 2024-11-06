@@ -18,7 +18,7 @@ def adversarial_attack_at_influence_maximization ():
         - argv[1]: the name of the relative file's path containing the graph to analyze (e.g. data/email.txt)
     '''
     
-    prob_of_being_infected = 0.2
+    prob_of_being_infected = 0.9
     
     print('---- find seed set ----\n\n')
     

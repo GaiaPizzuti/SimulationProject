@@ -10,7 +10,7 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from operator import itemgetter
 
-PROB_OF_BEING_INFECTED = 0.2
+PROB_OF_BEING_INFECTED = 0.3
 
 # ------------------------- class Node -------------------------
 
@@ -49,9 +49,14 @@ def print_tree(tree, spaces=0):
 
 def simulate_infection(seed_set : set, filename : str, plot : list[int], prob: float, removed_nodes=[]):
     '''
-    simulate the infection of a graph
-    input: seed_set is the set of original infected nodes, filename is the name of the file containing the graph
-    output: the number of infected nodes
+    Function to simulate the spread of an infection in a temporal graph
+    input:
+        - seed_set: the set of original infected nodes
+        - filename: the name of the file containing the graph
+        - prob: the probability of being infected
+        - removed_nodes: the set of nodes that have been removed
+    output:
+        - the number of infected nodes
     '''
     
     infected = set(seed_set)
@@ -73,7 +78,7 @@ def simulate_infection(seed_set : set, filename : str, plot : list[int], prob: f
         # if is equal, we'll continue to add elements to the queue
         # if is different, we'll process the queue
         if last_unixts != None and last_unixts != unixts:
-            process_queue (messages, infected, prob)
+            process_queue(messages, infected, prob)
             plot.append(len(infected))
 
         # if the src is infected, than the message is infected
@@ -88,16 +93,18 @@ def simulate_infection(seed_set : set, filename : str, plot : list[int], prob: f
 
         last_unixts = unixts
 
-    process_queue (messages, infected, prob)
+    process_queue(messages, infected, prob)
     plot.append(len(infected))
     return infected
 
-def process_queue (messages : dict[int, list[int]], infected : set[int], prob: float):
+def process_queue(messages : dict[int, list[int]], infected : set[int], prob: float):
     '''
-    function that process the queue of messages: it choose a random message from the queue and
-    if the message is infected, it will added to the infection tree
-    input: messages is the queue of messages, infected is the set of infected nodes
-    output: it doesn't return anything, it just update the set of infected nodes
+    function that process the queue of messages: it choose a random message from the queue and if the message is infected,
+    it will added to the infection tree
+    
+    input:
+        - messages is the queue of messages
+        - infected is the set of infected nodes
     '''
 
     # for each node that has received a message, choose a random message from the queue and check if it is infected
@@ -114,11 +121,17 @@ def process_queue (messages : dict[int, list[int]], infected : set[int], prob: f
 
 # ------------------------- forward forest -------------------------
 
-def forward_forest (seed_set : set, filename : str, prob: float) -> list[Node]:
+def forward_forest(seed_set : set, filename : str, prob: float) -> list[Node]:
     '''
     Simulation of the infection to find the forest of the infection
-    input: seed_set is the set of original infected nodes, filename is the name of the file containing the graph
-    output: the forest of the infection
+    
+    input:
+        - seed_set: the set of original infected nodes
+        - filename: the name of the file containing the graph
+        - prob: the probability of being infected
+    
+    output:
+        - the forest of the infection
     '''
 
     # final forest of the infection
@@ -142,7 +155,7 @@ def forward_forest (seed_set : set, filename : str, prob: float) -> list[Node]:
         # if is equal, we'll continue to add elements to the queue
         # if is different, we'll process the queue
         if last_unixts != None and last_unixts != unixts:
-            update_infection_tree (messages, infected, forest, last_unixts, prob)
+            update_infection_tree(messages, infected, forest, last_unixts, prob)
         
         # if the src is infected, than the message is infected
         if src in infected:
@@ -156,10 +169,10 @@ def forward_forest (seed_set : set, filename : str, prob: float) -> list[Node]:
 
         last_unixts = unixts
 
-    update_infection_tree (messages, infected, forest, last_unixts, prob) # type: ignore
+    update_infection_tree(messages, infected, forest, last_unixts, prob) # type: ignore
     return forest
 
-def update_infection_tree (messages : dict[int, list[tuple[int, int]]], infected : set[int], forest : list[Node], unixts : int, prob: float):
+def update_infection_tree(messages : dict[int, list[tuple[int, int]]], infected : set[int], forest : list[Node], unixts : int, prob: float):
     '''
     function that process the queue of messages: it choose a random message from the queue and
     if the message is infected, it will added to the infection tree
@@ -187,7 +200,7 @@ def update_infection_tree (messages : dict[int, list[tuple[int, int]]], infected
                 infected.add(dst) """
     messages.clear()
 
-def add_infected_edges (new_node : Node, forest : list[Node], src: int):
+def add_infected_edges(new_node : Node, forest : list[Node], src: int):
     ''''
     function that add a new infected edge between the dst node and each src node that has the selected id
     input: new_node is the node that has been infected, forest is the forest of the infection
@@ -231,7 +244,12 @@ def choose_nodes (forest: list[Node], seed_set: set[int], budget: int) -> set[in
         max_subtree = 0
         for tree in forest:
             max_subtree, chosen_node = choose_nodes_rec(tree, seed_set, max_subtree, chosen_node, set_chosen_nodes)
-        set_chosen_nodes.add(chosen_node)
+            
+        if chosen_node != -1:
+            set_chosen_nodes.add(chosen_node)
+    
+    if len(set_chosen_nodes) < budget:
+        print("Warning: the number of nodes chosen is less than the budget")
     
     return set_chosen_nodes
 
@@ -295,7 +313,6 @@ def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob: float
     '''
     function that find the attack set of nodes that will be removed in order to minimize the spread of infections
     
-    
     input:
         - filename: string, the name of the file containing the information about the network
         - seed_set: set, set of nodes selected to maximize the spread of the influence
@@ -316,7 +333,7 @@ def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob: float
 
     #forest_visualization (seed_set, filename, fig, ax0)
 
-    first_simulation = simulate_infection (seed_set, filename, set_plot, prob)
+    first_simulation = simulate_infection(seed_set, filename, set_plot, prob)
     #plt.plot(set_plot, label="No preventive measures", color="blue")
 
     print(f"Infected nodes:", len(first_simulation))
@@ -324,9 +341,9 @@ def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob: float
     #forest_visualization (first_simulation, filename, fig, ax1)
 
     for _ in range (times):
-        forest = forward_forest (seed_set, filename, prob)
+        forest = forward_forest(seed_set, filename, prob)
 
-        selected_node = choose_nodes (forest, seed_set, node_budget)
+        selected_node = choose_nodes(forest, seed_set, node_budget)
         for node in selected_node:
             removed_nodes[node] = removed_nodes[node] + 1
 
