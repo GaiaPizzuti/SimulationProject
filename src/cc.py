@@ -2,8 +2,34 @@
 file that define the cc function in order to control the number of cc contained in a graph before removing the attack set and after
 removing it
 '''
+from collections import defaultdict
 
-# ------------------------- class Node -------------------------
+
+# ------------------------- class Forest -------------------------
+
+class Forest:
+    # constructor
+    def __init__(self):
+        # initialize adjacency list
+        self.adjacency_list = defaultdict(dict)
+        
+    def add_edge(self, src, dst):
+        if src not in self.adjacency_list:
+            self.adjacency_list[src] = dict()
+        if dst not in self.adjacency_list:
+            self.adjacency_list[dst] = dict()
+            
+        self.adjacency_list[src][dst] = None
+        self.adjacency_list[dst][src] = None
+    
+    def add_node(self, node):
+        if node not in self.adjacency_list:
+            self.adjacency_list[node] = dict()
+    
+    def get_adjacency_list(self):
+        return {k: list(v.keys()) for k, v in self.adjacency_list.items()}
+    
+# ------------------------- class Graph -------------------------
 
 class Graph:
     # constructor

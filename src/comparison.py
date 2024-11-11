@@ -8,6 +8,7 @@ import igraph as ig
 import matplotlib.pyplot as plt
 from operator import itemgetter
 from typing import Set, List, Dict, Tuple
+from infectionSimulation import simulate_infection
 
 PROB_OF_BEING_INFECTED = 0.2
 
@@ -43,79 +44,6 @@ def print_tree(tree, spaces=0):
     print(" " * spaces, tree)
     for child in tree.children:
         print_tree(child, spaces+1)
-
-# ------------------------- functions -------------------------
-
-def simulate_infection(seed_set : set, filename : str, plot : list, prob: float, removed_nodes=[], nodes=defaultdict(), nodes_random=[]) -> Set[int]:
-    '''
-    simulate the infection of a graph
-    input: seed_set is the set of original infected nodes, filename is the name of the file containing the graph
-    output: the number of infected nodes
-    '''
-    
-    infected = set(seed_set)
-
-    # queue of tuples (src, state)
-    messages = defaultdict(list)
-
-    last_unixts = None
-    
-    split_char = ' '
-    if filename == 'data/fb-forum.txt':
-        split_char = ','
-
-    file = (row for row in open(filename, "r"))
-    filtered_edges = [(int(src), int(dst), int(unixts)) for src, dst, unixts in [line.split(split_char) for line in file] if int(src) not in removed_nodes and int(dst) not in removed_nodes]
-    for src, dst, unixts in filtered_edges:
-
-        if removed_nodes == []:
-            count_degree(src, dst, nodes, infected)
-            count_nodes(src, dst, nodes_random)
-
-        # check if the last_unixts is None or queal to the current unixts
-        # if is equal, we'll continue to add elements to the queue
-        # if is different, we'll process the queue
-        if last_unixts != None and last_unixts != unixts:
-            process_queue (messages, infected, prob)
-            plot.append(len(infected))
-
-        # if the src is infected, than the message is infected
-        if src in infected:
-            state = 1
-        else:
-            state = 0
-
-        # add the tuple (src, state) to the queue
-        # if the destination is already in the list, we'll add the tuple to the queue
-        messages[dst].append(state)
-
-        last_unixts = unixts
-
-    process_queue (messages, infected, prob)
-    plot.append(len(infected))
-    return infected
-
-def process_queue (messages : Dict[int, List[int]], infected : Set[int], prob: float):
-    '''
-    function that process the queue of messages: it choose a random message from the queue and
-    if the message is infected, it will added to the infection tree
-    input: messages is the queue of messages, infected is the set of infected nodes
-    output: it doesn't return anything, it just update the set of infected nodes
-    '''
-
-    # for each node that has received a message, choose a random message from the queue and check if it is infected
-    for dst, states in messages.items():
-        """
-        previous version
-        random_state = random.choice(states)
-        if random_state == 1:
-            infected.add(dst) """
-        infected_messages = sum(states)
-        prob_of_not_being_infected = pow((1 - prob), infected_messages)
-        infection_result = random.uniform(0, 1)
-        if infection_result > prob_of_not_being_infected:
-            infected.add(dst)
-    messages.clear()
 
 # ------------------------- forward forest -------------------------
 
@@ -282,7 +210,7 @@ def count_nodes (src: int, dst: int, list_nodes: set[int]):
     list_nodes.add(dst)
     return list_nodes
 
-def result_comparison(filename: str, seed_set: set, node_budget: int, subtrees: set, centrality: set, prob: float = PROB_OF_BEING_INFECTED):
+def result_comparison(filename: str, seed_set: set, node_budget: int, subtrees: set, centrality: set, random: set, prob: float = PROB_OF_BEING_INFECTED):
     
     # dictionary that contains the number of times that each node that compare in the subtree algorithm
     removed_nodes_subtree = defaultdict(int)
@@ -293,7 +221,7 @@ def result_comparison(filename: str, seed_set: set, node_budget: int, subtrees: 
 
     set_plot = list()
 
-    simulate_infection (seed_set, filename, set_plot, prob, nodes=nodes_centrality, nodes_random=nodes)
+    simulate_infection (seed_set, filename, prob, set_plot, nodes=nodes_centrality, nodes_random=nodes)
     plt.plot(set_plot, label="No preventive measures", color="blue")
 
     """ # simulation and selection of the nodes with the subtree algorithm
@@ -305,13 +233,13 @@ def result_comparison(filename: str, seed_set: set, node_budget: int, subtrees: 
             removed_nodes_subtree[node] = removed_nodes_subtree[node] + 1
 
     selected_nodes_subtree = find_best_node (removed_nodes_subtree, node_budget)
-    print(f"Selected nodes subtree: {selected_nodes_subtree}")"""
+    print(f"Selected nodes subtree: {selected_nodes_subtree}")
     
     for node in subtrees:
-            removed_nodes_subtree[node] = removed_nodes_subtree[node] + 1
+            removed_nodes_subtree[node] = removed_nodes_subtree[node] + 1"""
 
     set_plot = list()
-    simulate_infection (seed_set, filename, set_plot, prob, subtrees)
+    simulate_infection (seed_set, filename, prob, set_plot, subtrees)
     plt.plot(set_plot, label="subtrees", color="red")
 
     """ # simulation and selection of the nodes with the centrality algorithm
@@ -319,15 +247,11 @@ def result_comparison(filename: str, seed_set: set, node_budget: int, subtrees: 
     print(f"Selected nodes centrality: {selected_nodes_centrality}") """
 
     set_plot = list()
-    simulate_infection (seed_set, filename, set_plot, prob, centrality)
+    simulate_infection (seed_set, filename, prob, set_plot, centrality)
     plt.plot(set_plot, label="centrality measure", color="green")
 
-    # simulation and selection of the nodes with the random algorithm
-    selected_node_random = choose_random_nodes (node_budget, seed_set, nodes)
-    #print(f"Selected nodes random: {selected_node_random}")
-
     set_plot = list()
-    simulate_infection (seed_set, filename, set_plot, prob, selected_node_random)
+    simulate_infection (seed_set, filename, prob, set_plot, random)
     plt.plot(set_plot, label="random", color="yellow")
 
     plt.legend(loc="lower right", fontsize=12)
@@ -346,5 +270,6 @@ if __name__ == "__main__":
     
     subtrees_set = {43, 88, 54, 25, 66, 80, 23, 48, 16, 35}
     centrality_set = {54, 60, 71, 49, 25, 24, 48, 0, 26, 35}
+    random_set = {54, 60, 71, 49, 25, 24, 48, 0, 26, 35}
     
-    result_comparison(filename, seed_set, node_budget, subtrees_set, centrality_set)
+    result_comparison(filename, seed_set, node_budget, subtrees_set, centrality_set, random_set)

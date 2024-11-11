@@ -3,6 +3,7 @@ import sys
 from temporalGraph import influence_maximization, spread_infection, get_random_seed_set
 from subTreeInfection import subtrees_methods
 from vsCentrality import centrality_analysis
+from vsRandom import random_analysis
 from comparison import result_comparison
 from degreeNodes import degree_nodes
 from cc import compare_cc
@@ -42,10 +43,14 @@ def adversarial_attack_at_influence_maximization ():
     print('\n\n---- minimize infection with centrality ----\n\n')
     
     centrality = centrality_analysis(filename, set(seed_set), node_budget, set(subtree), prob_of_being_infected)
+
+    print('\n\n---- minimize infection with random ----\n\n')
+
+    random = random_analysis(filename, set(seed_set), node_budget, prob_of_being_infected, set(subtree))
     
     print('\n\n---- result comparison ----\n\n')
     
-    result_comparison(filename, set(seed_set), node_budget, set(subtree), set(centrality), prob_of_being_infected)
+    result_comparison(filename, set(seed_set), node_budget, set(subtree), set(centrality), set(random), prob_of_being_infected)
     
     degree_nodes(filename, subtree, centrality)
     
