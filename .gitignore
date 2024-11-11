@@ -1,5 +1,9 @@
-# ignore all files of type: ".venv/ output.txt         src/__pycache__/subTreeInfection.cpython-38.pyc src/__pycache__/temporalGraph.cpython-38.pyc"
-
 .venv/
+simulation_venv/
 output.txt
 */__pycache__/*.pyc
+
+# ignore any possible pycache files
+*.pyc
+__pycache__/
+*.py[cod]
