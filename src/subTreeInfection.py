@@ -65,7 +65,7 @@ class Node:
 
 def print_tree(tree, spaces=0):
     ''''
-    function that print the tree as an horizontal tree
+    function that prints the tree as an horizontal tree
     if spaces are passed in input, the tree will be printed with the number of spaces passed in input
     '''
     print(" " * spaces, tree)
@@ -75,6 +75,20 @@ def print_tree(tree, spaces=0):
 # ------------------------- functions -------------------------
 
 def infect_temporal_graph(infected : set[int], messages : dict[int, list[int]], last_unixts : int, split_char : str, file, prob: float, plot : list[int], removed_nodes=[]):
+    '''
+    Function to simulate the spread of an infection in a temporal graph
+    input:
+        - infected: the set of original infected nodes
+        - messages: the queue of messages
+        - last_unixts: the last unixts
+        - split_char: the character that split the lines of the file
+        - file: the file containing the graph
+        - prob: the probability of being infected
+        - plot: the list of the number of infected nodes at each time step
+        - removed_nodes: the set of nodes that have been removed
+    output:
+        - the set of infected nodes
+    '''
     filtered_edges = [(int(src), int(dst), int(unixts)) for src, dst, unixts in [line.split(split_char) for line in file] if int(src) not in removed_nodes and int(dst) not in removed_nodes]
     for src, dst, unixts in filtered_edges:
 
@@ -102,6 +116,19 @@ def infect_temporal_graph(infected : set[int], messages : dict[int, list[int]], 
     return infected
     
 def infect_static_graph(infected : set[int], split_char : str, file, prob: float, plot : list[int], removed_nodes=[]):
+    '''
+    Function to simulate the spread of an infection in a static graph
+    input:
+        - infected: the set of original infected nodes
+        - split_char: the character that split the lines of the file
+        - file: the file containing the graph
+        - prob: the probability of being infected
+        - plot: the list of the number of infected nodes at each time step
+        - removed_nodes: the set of nodes that have been removed
+    output:
+        - the set of infected nodes
+    '''
+    
     filtered_edges = [(int(src), int(dst)) for src, dst, unixts in [line.split(split_char) for line in file] if int(src) not in removed_nodes and int(dst) not in removed_nodes]
 
     static_graph = Graph()
@@ -131,9 +158,15 @@ def infect_static_graph(infected : set[int], split_char : str, file, prob: float
 
 def simulate_infection(seed_set : set, filename : str, plot : list[int], prob: float, removed_nodes=[]):
     '''
-    simulate the infection of a graph
-    input: seed_set is the set of original infected nodes, filename is the name of the file containing the graph
-    output: the number of infected nodes
+    Function to simulate the spread of an infection in a temporal graph
+    input:
+        - seed_set: the set of original infected nodes
+        - filename: the name of the file containing the graph
+        - plot: the list of the number of infected nodes at each time step
+        - prob: the probability of being infected
+        - removed_nodes: the set of nodes that have been removed
+    output:
+        - the number of infected nodes
     '''
     
     infected = set(seed_set)
@@ -159,10 +192,12 @@ def simulate_infection(seed_set : set, filename : str, plot : list[int], prob: f
 
 def process_queue (messages : dict[int, list[int]], infected : set[int], prob: float):
     '''
-    function that process the queue of messages: it choose a random message from the queue and
-    if the message is infected, it will added to the infection tree
-    input: messages is the queue of messages, infected is the set of infected nodes
-    output: it doesn't return anything, it just update the set of infected nodes
+    function that processes the queue of messages: it choose a random message from the queue and if the message is infected,
+    it will added to the infection tree
+    
+    input:
+        - messages is the queue of messages
+        - infected is the set of infected nodes
     '''
 
     # for each node that has received a message, choose a random message from the queue and check if it is infected
@@ -180,6 +215,19 @@ def process_queue (messages : dict[int, list[int]], infected : set[int], prob: f
 # ------------------------- forward forest -------------------------
 
 def create_forest_temporal_graph(infected : set[int], messages : dict[int, list[tuple[int, int]]], forest : list[Node], last_unixts : int, split_char : str, file, prob: float) -> list[Node]:
+    '''
+    Function that creates the forest of the infection in a temporal graph
+    input: 
+        - infected: the set of original infected nodes
+        - messages: the queue of messages
+        - forest: the forest of the infection
+        - last_unixts: the last unixts
+        - split_char: the character that split the lines of the file
+        - file: the file containing the graph
+        - prob: the probability of being infected
+    output: 
+        - the forest of the infection
+    '''
     filtered_edges = [(int(src), int(dst), int(unixts)) for src, dst, unixts in [line.split(split_char) for line in file] if int(dst) not in seed_set]
 
     for src, dst, unixts in filtered_edges:
@@ -206,6 +254,16 @@ def create_forest_temporal_graph(infected : set[int], messages : dict[int, list[
     return forest
 
 def create_forest_static_graph(infected : set[int], split_char : str, file, prob: float):
+    '''
+    Function that creates the forest of the infection in a static graph
+    input:
+        - infected: the set of original infected nodes
+        - split_char: the character that split the lines of the file
+        - file: the file containing the graph
+        - prob: the probability of being infected
+    output:
+        - the forest of the infection
+    '''    
     infected, infection_tree = infect_static_graph(infected, split_char, file, prob, [])
     
     return infection_tree
@@ -239,10 +297,13 @@ def forward_forest (seed_set : set, filename : str, prob: float):
 
 def update_infection_tree (messages : dict[int, list[tuple[int, int]]], infected : set[int], forest : list[Node], unixts : int, prob: float):
     '''
-    function that process the queue of messages: it choose a random message from the queue and
-    if the message is infected, it will added to the infection tree
-    input: messages is the queue of messages, infected is the set of infected nodes, forest is the forest of the infection
-    output: it doesn't return anything, it just update the set of infected nodes and the forest of the infection
+    Function that updates the forest of the infection
+    input:
+        - messages is the queue of messages
+        - infected is the set of infected nodes
+        - forest is the forest of the infection
+        - unixts is the unixts of the last message
+        - prob is the probability of being
     '''
 
     for dst, data in messages.items():
@@ -267,7 +328,7 @@ def update_infection_tree (messages : dict[int, list[tuple[int, int]]], infected
 
 def add_infected_edges (new_node : Node, forest : list[Node], src: int):
     ''''
-    function that add a new infected edge between the dst node and each src node that has the selected id
+    Function that adds a new infected edge between the dst node and each src node that has the selected id
     input: new_node is the node that has been infected, forest is the forest of the infection
     output: it doesn't return anything, it just update the forest of the infection
     '''
@@ -293,7 +354,7 @@ def count_subtree_size_rec (tree: Node):
 
 def choose_nodes (forest: list[Node], seed_set: set[int], budget: int) -> set[int]:
     '''
-    function that choose k nodes from the forest
+    function that chooses k nodes from the forest
     input: forest is the forest of the infection, seed_set is the set of initial infected nodes, k is the number of nodes to choose
     output: the set of nodes chosen
     '''
@@ -355,7 +416,7 @@ def sample_vrr_path(forest: Graph, seed_set: set[int]):
 
 def forest_visualization (infected: set[int], filename : str, fig : Figure, ax, removed_nodes=()):
     '''
-    function that visualize the forest of the infection
+    function that visualizes the forest of the infection
     input: forest is the forest of the infection, filename is the name of the file containing the graph
     output: it doesn't return anything, it just create a graph visualization
     '''
@@ -394,7 +455,7 @@ def translate_nodes (vertices, removed_nodes) -> set[int]:
 
 def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob: float = PROB_OF_BEING_INFECTED):
     '''
-    function that find the attack set of nodes that will be removed in order to minimize the spread of infections
+    function that finds the attack set of nodes that will be removed in order to minimize the spread of infections
     
     
     input:
