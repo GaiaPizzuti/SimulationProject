@@ -13,7 +13,7 @@ from operator import itemgetter
 from cc import Graph, Forest
 from infectionSimulation import simulate_infection, infect_static_graph
 
-PROB_OF_BEING_INFECTED = 0.8
+from settings import *
 
 
 # ------------------------- class Node -------------------------
@@ -74,7 +74,7 @@ def create_forest_temporal_graph(seed_set : set, infected : set[int], messages :
         # if is equal, we'll continue to add elements to the queue
         # if is different, we'll process the queue
         if last_unixts != None and last_unixts != unixts:
-            update_infection_tree (messages, infected, forest, last_unixts, prob)
+            update_infection_tree (messages, infected, forest, last_unixts)
         
         # if the src is infected, than the message is infected
         if src in infected:
@@ -88,7 +88,7 @@ def create_forest_temporal_graph(seed_set : set, infected : set[int], messages :
 
         last_unixts = unixts
 
-    update_infection_tree (messages, infected, forest, last_unixts, prob) # type: ignore
+    update_infection_tree (messages, infected, forest, last_unixts) # type: ignore
     return forest
 
 def create_forest_static_graph(infected : set[int], split_char : str, file, prob: float):
@@ -106,7 +106,7 @@ def create_forest_static_graph(infected : set[int], split_char : str, file, prob
     
     return infection_tree
 
-def forward_forest (seed_set : set, filename : str, prob: float):
+def forward_forest (seed_set : set, filename : str, prob):
     '''
     Simulation of the infection to find the forest of the infection
     input: seed_set is the set of original infected nodes, filename is the name of the file containing the graph
@@ -133,7 +133,7 @@ def forward_forest (seed_set : set, filename : str, prob: float):
     
     
 
-def update_infection_tree (messages : dict[int, list[tuple[int, int]]], infected : set[int], forest : list[Node], unixts : int, prob: float):
+def update_infection_tree(messages : dict[int, list[tuple[int, int]]], infected : set[int], forest : list[Node], unixts : int):
     '''
     Function that updates the forest of the infection
     input:
@@ -150,7 +150,7 @@ def update_infection_tree (messages : dict[int, list[tuple[int, int]]], infected
             for src, state in data:
                 if state == 1:
                     infection_result = random.uniform(0, 1)
-                    if infection_result <= prob:
+                    if infection_result <= prob_of_being_infected:
                         new_node = Node(dst, unixts)
                         add_infected_edges (new_node, forest, src)
                         infected.add(dst)
@@ -164,7 +164,7 @@ def update_infection_tree (messages : dict[int, list[tuple[int, int]]], infected
                 infected.add(dst) """
     messages.clear()
 
-def add_infected_edges (new_node : Node, forest : list[Node], src: int):
+def add_infected_edges(new_node : Node, forest : list[Node], src: int):
     ''''
     Function that adds a new infected edge between the dst node and each src node that has the selected id
     input: new_node is the node that has been infected, forest is the forest of the infection
@@ -248,50 +248,8 @@ def sample_vrr_path(forest: Graph, seed_set: set[int]):
         node = list(dict.fromkeys(forest.adjacency_list[node]))[0] 
         # print(f"Node {node}'s adjacents: {forest.adjacency_list[node]}")
     return path
-    
 
-# ------------------------- forest visualization -------------------------
-
-def forest_visualization (infected: set[int], filename : str, fig : Figure, ax, removed_nodes=()):
-    '''
-    function that visualizes the forest of the infection
-    input: forest is the forest of the infection, filename is the name of the file containing the graph
-    output: it doesn't return anything, it just create a graph visualization
-    '''
-
-    # create a graph
-    G = ig.Graph.Read_Ncol(filename, names=True, directed=True)
-
-    translated_removed_nodes = translate_nodes (G.vs, removed_nodes)
-
-    # create the visualization
-    infected_patch = patches.Patch(color='red', label='Infected')
-    noninfected_patch = patches.Patch(color='grey', label='Non infected')
-    fig.legend(handles=[infected_patch, noninfected_patch], loc='outside upper right')
-    ig.plot(
-        G,
-        target=ax,
-        vertex_size=0.2, # size of the nodes
-        vertex_color=["grey" if int(node) not in infected else "red" for node in G.vs["name"]],
-        vertex_label=G.vs["name"],
-        vertex_label_size=7.0,
-        vertex_frame_width=4.0,
-        vertex_frame_color="white",
-        edge_label=G.es["weight"],
-        edge_label_size=7.0,
-        edge_width=0.5,
-        edge_color=["grey" if int(edge.source) not in translated_removed_nodes and int(edge.target) not in translated_removed_nodes else "white" for edge in G.es],
-        edge_label_color=["black" if int(edge.source) not in translated_removed_nodes and int(edge.target) not in translated_removed_nodes else "white" for edge in G.es],
-    )
-
-def translate_nodes (vertices, removed_nodes) -> set[int]:
-    translated_nodes = set()
-    for vertex in vertices:
-        if int(vertex["name"]) in removed_nodes:
-            translated_nodes.add(vertex.index)
-    return translated_nodes
-
-def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob: float = PROB_OF_BEING_INFECTED):
+def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob):
     '''
     function that finds the attack set of nodes that will be removed in order to minimize the spread of infections
     
@@ -305,39 +263,32 @@ def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob: float
     output:
         - selected_nodes: list, attack set
     '''
-    times = 10
     removed_nodes = defaultdict(int)
+
+    no_prevention = list()
     
-    fig, ax = plt.subplots(1, 3, figsize=(15, 15))
-    ax0, ax1, ax2 = ax.flatten()
+    total_length = 0
+    for _ in range(times):
+        first_simulation = simulate_infection (seed_set, filename, prob, no_prevention)
+        total_length += len(first_simulation)
 
-    set_plot = list()
-    plt.subplots(figsize=(5, 5))
-
-    #forest_visualization (seed_set, filename, fig, ax0)
-
-    first_simulation = simulate_infection (seed_set, filename, prob, set_plot)
-    #plt.plot(set_plot, label="No preventive measures", color="blue")
-
-    print(f"Infected nodes:", len(first_simulation))
-    
-    #forest_visualization (first_simulation, filename, fig, ax1)
+    print(f"Infected nodes first simulation:",  total_length // times)
     
     # initialize the list of vrr paths if the graph is static
     vrr_paths = list()
     
     for _ in range (times):
-        forest, is_static = forward_forest (seed_set, filename, prob)
+        forest, is_static = forward_forest(seed_set, filename, prob)
 
         if not is_static:
-            selected_node = choose_nodes (forest, seed_set, node_budget)
+            selected_node = choose_nodes(forest, seed_set, node_budget)
             for node in selected_node:
                 removed_nodes[node] = removed_nodes[node] + 1
         else:
             vrr_paths.append(sample_vrr_path(forest, seed_set))
 
     if not is_static:
-        selected_nodes = find_best_node (removed_nodes, node_budget)
+        selected_nodes = find_best_node(removed_nodes, node_budget)
     else:
         # rank the nodes by the number of times they were selected and choose the top node_budget nodes
         flat_vrr_paths = [node for path in vrr_paths for node in path]
@@ -345,20 +296,19 @@ def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob: float
         
     print(f"Selected nodes (Subtree method): {selected_nodes}")
 
-    set_plot = list()
-    second_simulation = simulate_infection (seed_set, filename, prob, set_plot, selected_nodes)
-    print(f"Infected nodes: {len(second_simulation)}")
-    plt.plot(set_plot, label="Subtree algorithm", color="red")
+    prevention = list()
+    
+    total_infected = 0
+    for _ in range(times):
+        second_simulation = simulate_infection(seed_set, filename, prob, prevention, selected_nodes)
+        total_infected += len(second_simulation)
+        #print(f"Infected nodes: {len(second_simulation)}")
 
-    #forest_visualization (second_simulation, filename, fig, ax2, selected_nodes)
+    second_simulation = total_infected // times
+    print(f"Infected nodes second infection: {second_simulation}")
 
-    ratio = len(second_simulation) / len(first_simulation)
+    ratio = second_simulation / len(first_simulation)
     print(f"Ratio: {ratio}")
-
-    plt.legend(loc="lower right", fontsize=14)
-    plt.xlabel("time")
-    plt.ylabel("number of infected nodes")
-    #plt.show()
     
     return selected_nodes
 
