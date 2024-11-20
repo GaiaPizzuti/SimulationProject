@@ -95,7 +95,7 @@ def create_temporal_windows(filename, window_size=1000):
 
 
 
-def spread_infection(seed, filename, prob: float):
+def spread_infection(seed, filename, prob = PROB_OF_BEING_INFECTED):
     '''
     Spread the infection in the temporal network
     Input: seed is the seed set, filename is the name of the file
@@ -186,7 +186,7 @@ def find_seed_set(graph, k=1):
         
     return S
 
-def influence_maximization(filename: str, prob: float = PROB_OF_BEING_INFECTED):
+def influence_maximization(filename: str):
     windows = create_temporal_windows(filename)
     seed_set = []
     for window in windows:
