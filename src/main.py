@@ -7,6 +7,7 @@ from vsRandom import random_analysis
 from comparison import result_comparison
 from degreeNodes import degree_nodes
 from cc import compare_cc
+from numpy.random import Generator, PCG64, SeedSequence
 from settings import *
 
 filename = sys.argv[1]
@@ -39,7 +40,7 @@ def adversarial_attack_at_influence_maximization ():
     
     subtree = subtrees_methods(filename, set(seed_set), node_budget, prob_of_being_infected)
     
-    """ print('\n\n---- minimize infection with centrality ----\n\n')
+    print('\n\n---- minimize infection with centrality ----\n\n')
     
     centrality = centrality_analysis(filename, set(seed_set), node_budget, set(subtree), prob_of_being_infected)
 
@@ -53,7 +54,7 @@ def adversarial_attack_at_influence_maximization ():
     
     degree_nodes(filename, subtree, centrality)
     
-    compare_cc(filename, subtree, centrality) """
+    compare_cc(filename, subtree, centrality)
     
     return subtree
 
@@ -71,7 +72,8 @@ if __name__ == '__main__':
     """
     
     total_selected_nodes = []
-    for _ in range(times_main):
+    for i in range(times_main):
+        rng = generators[i]
         selected_nodes = adversarial_attack_at_influence_maximization()
         total_selected_nodes.append(selected_nodes)
     

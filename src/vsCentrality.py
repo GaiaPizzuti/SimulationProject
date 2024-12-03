@@ -7,6 +7,9 @@ from operator import itemgetter
 from typing import Set, List, Dict, Tuple
 from cc import Graph
 from infectionSimulation import simulate_infection
+from numpy.random import Generator, PCG64, SeedSequence
+
+from settings import *
 
 PROB_OF_BEING_INFECTED = 0.8
 
@@ -81,7 +84,6 @@ def find_best_node (nodes : Dict[int, int], budget : int, seed_set: Set[int]) ->
 # ------------------------- Main -------------------------
 
 def centrality_analysis(filename: str, seed_set: set, node_budget: int, selected_nodes_subtree: set, prob: float = PROB_OF_BEING_INFECTED):
-    times = 100
 
     # dictionary that contains the number of times that each node that compare in the subtree algorithm
     #removed_nodes_subtree = defaultdict(int)

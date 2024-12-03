@@ -7,6 +7,9 @@ from typing import List, Set, Dict, Tuple
 from cc import Graph, Forest
 from infectionSimulation import simulate_infection
 from subTreeInfection import subtrees_methods
+from numpy.random import Generator, PCG64, SeedSequence
+
+from settings import *
 
 PROB_OF_BEING_INFECTED = 0.2
 
@@ -52,14 +55,13 @@ def choose_random_nodes (budget : int, seed_set: Set[int], nodes: Set[int]):
     '''
     set_chosen_nodes = set()
     for _ in range(budget):
-        chosen_node = random.choice(list(nodes))
+        chosen_node = rng.choice(list(nodes))
         while chosen_node in seed_set or chosen_node in set_chosen_nodes:
-            chosen_node = random.choice(list(nodes))
+            chosen_node = rng.choice(list(nodes))
         set_chosen_nodes.add(chosen_node)
     return set_chosen_nodes
 
 def random_analysis(filename: str, seed_set: set, node_budget: int, prob: float = PROB_OF_BEING_INFECTED, selected_nodes_subtree = []):
-    times = 100
 
     # set that contains all the nodes of the graph
     nodes = set()

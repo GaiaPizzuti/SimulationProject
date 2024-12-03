@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from operator import itemgetter
 from cc import Graph, Forest
 from infectionSimulation import simulate_infection, infect_static_graph
+from numpy.random import Generator, PCG64, SeedSequence
 
 from settings import *
 
@@ -149,7 +150,7 @@ def update_infection_tree(messages : dict[int, list[tuple[int, int]]], infected 
             
             for src, state in data:
                 if state == 1:
-                    infection_result = random.uniform(0, 1)
+                    infection_result = rng.uniform(0, 1)
                     if infection_result <= prob_of_being_infected:
                         new_node = Node(dst, unixts)
                         add_infected_edges (new_node, forest, src)
@@ -238,7 +239,7 @@ def sample_vrr_path(forest: Graph, seed_set: set[int]):
     if len(filtered_forest) == 0:
         return []
     
-    node = random.choice(filtered_forest)
+    node = rng.choice(filtered_forest)
     
     # find the path from the node to the root
     path = []
