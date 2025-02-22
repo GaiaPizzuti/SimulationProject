@@ -1,11 +1,8 @@
 # ------------------------- class Node -------------------------
 
 from collections import defaultdict
-import copy
-import random
 from operator import itemgetter
-from typing import Set, List, Dict, Tuple
-from cc import Graph
+from typing import Set, List, Dict
 from infectionSimulation import simulate_infection
 
 PROB_OF_BEING_INFECTED = 0.8

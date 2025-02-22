@@ -1,10 +1,7 @@
 # ------------------------- class Node -------------------------
 
-from collections import defaultdict
 import random
-from operator import itemgetter
-from typing import List, Set, Dict, Tuple
-from cc import Graph, Forest
+from typing import Set
 from infectionSimulation import simulate_infection
 from subTreeInfection import subtrees_methods
 

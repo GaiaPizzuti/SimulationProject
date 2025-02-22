@@ -9,7 +9,7 @@
 
 # ------------------------- Main -------------------------
 
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 
 def degree_nodes (filename: str, attack_set_subtree: list, attack_set_centrality: list):
     '''

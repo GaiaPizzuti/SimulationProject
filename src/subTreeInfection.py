@@ -3,14 +3,8 @@ file that define the subtrees_methods and all the functions used in it
 '''
 
 from collections import defaultdict
-import copy
 import random
-import igraph as ig
-from matplotlib import patches
-from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
 from operator import itemgetter
-from cc import Graph, Forest
 from infectionSimulation import simulate_infection, infect_static_graph
 
 from settings import *
