@@ -4,7 +4,6 @@ file in which is defined the function result comparison that plot the difference
 
 from collections import defaultdict
 import random
-import igraph as ig
 import matplotlib.pyplot as plt
 from operator import itemgetter
 from typing import Set, List, Dict, Tuple

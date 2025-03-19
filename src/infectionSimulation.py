@@ -1,6 +1,6 @@
 import random
 from collections import defaultdict
-from typing import Set, List, Dict, Tuple
+from typing import Set, List, Dict
 from cc import Graph, Forest
 from copy import deepcopy
 

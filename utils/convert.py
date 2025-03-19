@@ -1,8 +1,3 @@
-import os
-import sys
-import time
-import datetime
-
 def convert(filepath):
     old_file = open(filepath, 'r')
     new_file = open(filepath[:-4]+'-new.txt', "w")

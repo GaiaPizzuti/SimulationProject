@@ -3,15 +3,10 @@ file that define the subtrees_methods and all the functions used in it
 '''
 
 from collections import defaultdict
-import copy
 import random
-import igraph as ig
-from matplotlib import patches
-from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
 from operator import itemgetter
-from cc import Graph, Forest
 from infectionSimulation import simulate_infection, infect_static_graph
+from igraph import Graph
 from numpy.random import Generator, PCG64, SeedSequence
 
 from settings import *
@@ -130,7 +125,7 @@ def forward_forest (seed_set : set, filename : str, prob):
     if int(file[0].split(split_char)[2]) == -1:
         return create_forest_static_graph(infected, split_char, file, prob), True
     else:
-        return create_forest_temporal_graph(seed_set, infected, messages, forest, last_unixts, split_char, file, prob), False
+        return create_forest_temporal_graph(seed_set, infected, messages, forest, last_unixts, split_char, file, prob), False # type: ignore
     
     
 
@@ -282,11 +277,11 @@ def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob):
         forest, is_static = forward_forest(seed_set, filename, prob)
 
         if not is_static:
-            selected_node = choose_nodes(forest, seed_set, node_budget)
+            selected_node = choose_nodes(forest, seed_set, node_budget) # type: ignore
             for node in selected_node:
                 removed_nodes[node] = removed_nodes[node] + 1
         else:
-            vrr_paths.append(sample_vrr_path(forest, seed_set))
+            vrr_paths.append(sample_vrr_path(forest, seed_set)) # type: ignore
 
     if not is_static:
         selected_nodes = find_best_node(removed_nodes, node_budget)
@@ -321,4 +316,4 @@ if __name__ == "__main__":
     seed_set = {83, 49, 60, 85}
     node_budget = 10
     
-    subtrees_methods(filename, seed_set, node_budget)
+    subtrees_methods(filename, seed_set, node_budget, 0.4)
