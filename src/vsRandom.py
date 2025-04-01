@@ -7,6 +7,7 @@ from subTreeInfection import subtrees_methods
 from numpy.random import Generator, PCG64, SeedSequence
 
 from settings import *
+from statistics import *
 
 PROB_OF_BEING_INFECTED = 0.2
 
@@ -82,11 +83,13 @@ def random_analysis(filename: str, seed_set: set, node_budget: int, prob: float 
     selected_node_random = choose_random_nodes (node_budget, seed_set, nodes)
     print(f"Selected nodes (Random method): {selected_node_random}")
     
+    stats.simulation_type = "random"
     average_random = 0
     for _ in range(times):
         second_simulation_random = simulate_infection (seed_set, filename, prob, removed_nodes=selected_node_random)
         average_random += len(second_simulation_random)
     print(f"Average number of infected nodes, random method: {average_random/times}")
+    stats.simulation_type = "none"
 
     ratio = average_subtree/average_random
     print(f"Ratio between the two methods (lower = subtree method is better): {ratio}")

@@ -1,0 +1,561 @@
+---- find seed set ----
+
+
+seed set: [0]
+
+
+---- simulate infection ----
+
+
+number of infected nodes in the simulation: 1
+
+
+---- minimize infection with subtrees ----
+
+
+Infected nodes first simulation: 1
+Selected nodes (Subtree method): [np.int64(1)]
+Infected nodes second infection: 1
+Ratio: 0.5
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {np.int64(1)}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Centrality method): [1]
+Average number of infected nodes, centrality method: 1.0
+Ratio between the two methods (lower = subtree method is better): 1.0
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {np.int64(1)}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Random method): {np.int64(115)}
+Average number of infected nodes, random method: 1.0
+Ratio between the two methods (lower = subtree method is better): 1.0
+
+
+---- result comparison ----
+
+
+Common nodes: {1}
+Number of common nodes: 1
+Number of edges removed by subtrees algorithm:  2
+Number of nodes removed by centrality algorithm:  2
+connected components in the full graph: 1
+connected components in the graph after removing the attack set with the subtree algorithm:  2
+connected components in the graph after removing the attack set with the centrality algorithm:  2
+
+size largest cc before removing:  500
+size largest cc after removing in subtree:  499
+size largest cc after removing in centrality:  499
+---- find seed set ----
+
+
+seed set: [0]
+
+
+---- simulate infection ----
+
+
+number of infected nodes in the simulation: 1
+
+
+---- minimize infection with subtrees ----
+
+
+Infected nodes first simulation: 1
+Selected nodes (Subtree method): [np.int64(1)]
+Infected nodes second infection: 1
+Ratio: 0.3333333333333333
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {np.int64(1)}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Centrality method): [1]
+Average number of infected nodes, centrality method: 1.0
+Ratio between the two methods (lower = subtree method is better): 1.0
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {np.int64(1)}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Random method): {np.int64(337)}
+Average number of infected nodes, random method: 1.1
+Ratio between the two methods (lower = subtree method is better): 0.9090909090909091
+
+
+---- result comparison ----
+
+
+Common nodes: {1}
+Number of common nodes: 1
+Number of edges removed by subtrees algorithm:  2
+Number of nodes removed by centrality algorithm:  2
+connected components in the full graph: 1
+connected components in the graph after removing the attack set with the subtree algorithm:  2
+connected components in the graph after removing the attack set with the centrality algorithm:  2
+
+size largest cc before removing:  500
+size largest cc after removing in subtree:  499
+size largest cc after removing in centrality:  499
+---- find seed set ----
+
+
+seed set: [0]
+
+
+---- simulate infection ----
+
+
+number of infected nodes in the simulation: 1
+
+
+---- minimize infection with subtrees ----
+
+
+Infected nodes first simulation: 1
+Selected nodes (Subtree method): [np.int64(1)]
+Infected nodes second infection: 1
+Ratio: 0.5
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {np.int64(1)}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Centrality method): [1]
+Average number of infected nodes, centrality method: 1.0
+Ratio between the two methods (lower = subtree method is better): 1.0
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {np.int64(1)}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Random method): {np.int64(184)}
+Average number of infected nodes, random method: 1.4
+Ratio between the two methods (lower = subtree method is better): 0.7142857142857143
+
+
+---- result comparison ----
+
+
+Common nodes: {1}
+Number of common nodes: 1
+Number of edges removed by subtrees algorithm:  2
+Number of nodes removed by centrality algorithm:  2
+connected components in the full graph: 1
+connected components in the graph after removing the attack set with the subtree algorithm:  2
+connected components in the graph after removing the attack set with the centrality algorithm:  2
+
+size largest cc before removing:  500
+size largest cc after removing in subtree:  499
+size largest cc after removing in centrality:  499
+---- find seed set ----
+
+
+seed set: [0]
+
+
+---- simulate infection ----
+
+
+number of infected nodes in the simulation: 1
+
+
+---- minimize infection with subtrees ----
+
+
+Infected nodes first simulation: 1
+Selected nodes (Subtree method): [np.int64(1)]
+Infected nodes second infection: 1
+Ratio: 1.0
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {np.int64(1)}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Centrality method): [1]
+Average number of infected nodes, centrality method: 1.0
+Ratio between the two methods (lower = subtree method is better): 1.0
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {np.int64(1)}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Random method): {np.int64(76)}
+Average number of infected nodes, random method: 1.3
+Ratio between the two methods (lower = subtree method is better): 0.7692307692307693
+
+
+---- result comparison ----
+
+
+Common nodes: {1}
+Number of common nodes: 1
+Number of edges removed by subtrees algorithm:  2
+Number of nodes removed by centrality algorithm:  2
+connected components in the full graph: 1
+connected components in the graph after removing the attack set with the subtree algorithm:  2
+connected components in the graph after removing the attack set with the centrality algorithm:  2
+
+size largest cc before removing:  500
+size largest cc after removing in subtree:  499
+size largest cc after removing in centrality:  499
+---- find seed set ----
+
+
+seed set: [0]
+
+
+---- simulate infection ----
+
+
+number of infected nodes in the simulation: 1
+
+
+---- minimize infection with subtrees ----
+
+
+Infected nodes first simulation: 1
+Selected nodes (Subtree method): [np.int64(1)]
+Infected nodes second infection: 1
+Ratio: 1.0
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {np.int64(1)}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Centrality method): [1]
+Average number of infected nodes, centrality method: 1.0
+Ratio between the two methods (lower = subtree method is better): 1.0
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {np.int64(1)}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Random method): {np.int64(381)}
+Average number of infected nodes, random method: 1.5
+Ratio between the two methods (lower = subtree method is better): 0.6666666666666666
+
+
+---- result comparison ----
+
+
+Common nodes: {1}
+Number of common nodes: 1
+Number of edges removed by subtrees algorithm:  2
+Number of nodes removed by centrality algorithm:  2
+connected components in the full graph: 1
+connected components in the graph after removing the attack set with the subtree algorithm:  2
+connected components in the graph after removing the attack set with the centrality algorithm:  2
+
+size largest cc before removing:  500
+size largest cc after removing in subtree:  499
+size largest cc after removing in centrality:  499
+---- find seed set ----
+
+
+seed set: [0]
+
+
+---- simulate infection ----
+
+
+number of infected nodes in the simulation: 1
+
+
+---- minimize infection with subtrees ----
+
+
+Infected nodes first simulation: 1
+Selected nodes (Subtree method): [np.int64(1)]
+Infected nodes second infection: 1
+Ratio: 1.0
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {np.int64(1)}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Centrality method): [1]
+Average number of infected nodes, centrality method: 1.0
+Ratio between the two methods (lower = subtree method is better): 1.0
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {np.int64(1)}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Random method): {np.int64(178)}
+Average number of infected nodes, random method: 1.4
+Ratio between the two methods (lower = subtree method is better): 0.7142857142857143
+
+
+---- result comparison ----
+
+
+Common nodes: {1}
+Number of common nodes: 1
+Number of edges removed by subtrees algorithm:  2
+Number of nodes removed by centrality algorithm:  2
+connected components in the full graph: 1
+connected components in the graph after removing the attack set with the subtree algorithm:  2
+connected components in the graph after removing the attack set with the centrality algorithm:  2
+
+size largest cc before removing:  500
+size largest cc after removing in subtree:  499
+size largest cc after removing in centrality:  499
+---- find seed set ----
+
+
+seed set: [0]
+
+
+---- simulate infection ----
+
+
+number of infected nodes in the simulation: 1
+
+
+---- minimize infection with subtrees ----
+
+
+Infected nodes first simulation: 1
+Selected nodes (Subtree method): [1]
+Infected nodes second infection: 1
+Ratio: 0.5
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {1}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Centrality method): [1]
+Average number of infected nodes, centrality method: 1.0
+Ratio between the two methods (lower = subtree method is better): 1.0
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {1}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Random method): {np.int64(409)}
+Average number of infected nodes, random method: 1.1
+Ratio between the two methods (lower = subtree method is better): 0.9090909090909091
+
+
+---- result comparison ----
+
+
+Common nodes: {1}
+Number of common nodes: 1
+Number of edges removed by subtrees algorithm:  2
+Number of nodes removed by centrality algorithm:  2
+connected components in the full graph: 1
+connected components in the graph after removing the attack set with the subtree algorithm:  2
+connected components in the graph after removing the attack set with the centrality algorithm:  2
+
+size largest cc before removing:  500
+size largest cc after removing in subtree:  499
+size largest cc after removing in centrality:  499
+---- find seed set ----
+
+
+seed set: [0]
+
+
+---- simulate infection ----
+
+
+number of infected nodes in the simulation: 1
+
+
+---- minimize infection with subtrees ----
+
+
+Infected nodes first simulation: 1
+Selected nodes (Subtree method): []
+Infected nodes second infection: 1
+Ratio: 1.0
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): set()
+Average number of infected nodes, subtree method: 1.2
+Selected nodes (Centrality method): [1]
+Average number of infected nodes, centrality method: 1.0
+Ratio between the two methods (lower = subtree method is better): 1.2
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): set()
+Average number of infected nodes, subtree method: 1.4
+Selected nodes (Random method): {np.int64(54)}
+Average number of infected nodes, random method: 1.0
+Ratio between the two methods (lower = subtree method is better): 1.4
+
+
+---- result comparison ----
+
+
+Common nodes: set()
+Number of common nodes: 0
+Number of edges removed by subtrees algorithm:  0
+Number of nodes removed by centrality algorithm:  2
+connected components in the full graph: 1
+connected components in the graph after removing the attack set with the subtree algorithm:  1
+connected components in the graph after removing the attack set with the centrality algorithm:  2
+
+size largest cc before removing:  500
+size largest cc after removing in subtree:  500
+size largest cc after removing in centrality:  499
+---- find seed set ----
+
+
+seed set: [0]
+
+
+---- simulate infection ----
+
+
+number of infected nodes in the simulation: 1
+
+
+---- minimize infection with subtrees ----
+
+
+Infected nodes first simulation: 1
+Selected nodes (Subtree method): [np.int64(1)]
+Infected nodes second infection: 1
+Ratio: 0.5
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {np.int64(1)}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Centrality method): [1]
+Average number of infected nodes, centrality method: 1.0
+Ratio between the two methods (lower = subtree method is better): 1.0
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {np.int64(1)}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Random method): {np.int64(195)}
+Average number of infected nodes, random method: 1.0
+Ratio between the two methods (lower = subtree method is better): 1.0
+
+
+---- result comparison ----
+
+
+Common nodes: {1}
+Number of common nodes: 1
+Number of edges removed by subtrees algorithm:  2
+Number of nodes removed by centrality algorithm:  2
+connected components in the full graph: 1
+connected components in the graph after removing the attack set with the subtree algorithm:  2
+connected components in the graph after removing the attack set with the centrality algorithm:  2
+
+size largest cc before removing:  500
+size largest cc after removing in subtree:  499
+size largest cc after removing in centrality:  499
+---- find seed set ----
+
+
+seed set: [0]
+
+
+---- simulate infection ----
+
+
+number of infected nodes in the simulation: 1
+
+
+---- minimize infection with subtrees ----
+
+
+Infected nodes first simulation: 1
+Selected nodes (Subtree method): [np.int64(1)]
+Infected nodes second infection: 1
+Ratio: 0.5
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {np.int64(1)}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Centrality method): [1]
+Average number of infected nodes, centrality method: 1.0
+Ratio between the two methods (lower = subtree method is better): 1.0
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {np.int64(1)}
+Average number of infected nodes, subtree method: 1.0
+Selected nodes (Random method): {np.int64(11)}
+Average number of infected nodes, random method: 1.1
+Ratio between the two methods (lower = subtree method is better): 0.9090909090909091
+
+
+---- result comparison ----
+
+
+Common nodes: {1}
+Number of common nodes: 1
+Number of edges removed by subtrees algorithm:  2
+Number of nodes removed by centrality algorithm:  2
+connected components in the full graph: 1
+connected components in the graph after removing the attack set with the subtree algorithm:  2
+connected components in the graph after removing the attack set with the centrality algorithm:  2
+
+size largest cc before removing:  500
+size largest cc after removing in subtree:  499
+size largest cc after removing in centrality:  499
+total selected nodes:
+[np.int64(1)]
+[np.int64(1)]
+[np.int64(1)]
+[np.int64(1)]
+[np.int64(1)]
+[np.int64(1)]
+[1]
+[]
+[np.int64(1)]
+[np.int64(1)]

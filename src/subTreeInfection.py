@@ -10,6 +10,7 @@ from igraph import Graph
 from numpy.random import Generator, PCG64, SeedSequence
 
 from settings import *
+from statistics import *
 
 
 # ------------------------- class Node -------------------------
@@ -294,11 +295,14 @@ def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob):
 
     prevention = list()
     
+    stats.simulation_type = "subtrees"
     total_infected = 0
     for _ in range(times):
         second_simulation = simulate_infection(seed_set, filename, prob, prevention, selected_nodes)
         total_infected += len(second_simulation)
         #print(f"Infected nodes: {len(second_simulation)}")
+    
+    stats.simulation_type = "none"
 
     second_simulation = total_infected // times
     print(f"Infected nodes second infection: {second_simulation}")

@@ -4,6 +4,9 @@ from typing import Set, List, Dict
 from cc import Graph, Forest
 from copy import deepcopy
 
+from settings import *
+from statistics import *
+
 def infect_temporal_graph(infected : "set[int]", messages : "dict[int, list[int]]", last_unixts : int, split_char : str, file, prob: float, plot=[], removed_nodes=[], nodes=defaultdict(int), nodes_random=set()):
     '''
     Function to simulate the spread of an infection in a temporal graph
@@ -18,6 +21,8 @@ def infect_temporal_graph(infected : "set[int]", messages : "dict[int, list[int]
     output:
         - the set of infected nodes
     '''
+
+    stats.current_infected_nodes = []
     filtered_edges = [(int(src), int(dst), int(unixts)) for src, dst, unixts in [line.split(split_char) for line in file] if int(src) not in removed_nodes and int(dst) not in removed_nodes]
     for src, dst, unixts in filtered_edges:
 
@@ -31,6 +36,7 @@ def infect_temporal_graph(infected : "set[int]", messages : "dict[int, list[int]
         if last_unixts != None and last_unixts != unixts:
             process_queue (messages, infected, prob)
             plot.append(len(infected))
+            stats.current_infected_nodes.append(len(infected))
 
         # if the src is infected, than the message is infected
         if src in infected:
@@ -46,6 +52,8 @@ def infect_temporal_graph(infected : "set[int]", messages : "dict[int, list[int]
 
     process_queue (messages, infected, prob)
     plot.append(len(infected))
+    stats.current_infected_nodes.append(len(infected))
+    stats.save_infected_nodes_list()
     return infected
     
 def infect_static_graph(infected : "set[int]", split_char : str, file, prob: float, plot=[], removed_nodes=[], nodes=defaultdict(int), nodes_random=set()):
@@ -73,13 +81,15 @@ def infect_static_graph(infected : "set[int]", split_char : str, file, prob: flo
                     
     previous_infected = 0
     plot.append(len(infected))
+    stats.current_infected_nodes = []
+    stats.current_infected_nodes.append(len(infected))
     while len(infected) != previous_infected:
         previous_infected = len(infected)
         new_infected = deepcopy(infected)
         for node in infected:
             for neighbor in static_graph.adjacency_list[node]:
                 if neighbor not in infected:
-                    infection_result = random.uniform(0, 1)
+                    infection_result = rng.uniform(0, 1)
                     if infection_result <= prob:
                         new_infected.add(neighbor)
                         infection_tree.add_edge(node, neighbor)
@@ -88,7 +98,9 @@ def infect_static_graph(infected : "set[int]", split_char : str, file, prob: flo
                         # print(f"Node {node}'s adjacents: {infection_tree.adjacency_list[node]}\n")
         infected = new_infected
         plot.append(len(infected))
+        stats.current_infected_nodes.append(len(infected))
         
+    stats.save_infected_nodes_list()
     return infected, infection_tree
 
 def simulate_infection(seed_set : set, filename : str, prob: float, plot=[], removed_nodes=[], nodes=defaultdict(int), nodes_random=set()):
@@ -137,12 +149,12 @@ def process_queue (messages : Dict[int, List[int]], infected : Set[int], prob: f
     for dst, states in messages.items():
         """
         previous version
-        random_state = random.choice(states)
+        random_state = rng.choice(states)
         if random_state == 1:
             infected.add(dst) """
         infected_messages = sum(states)
         prob_of_not_being_infected = pow((1 - prob), infected_messages)
-        infection_result = random.uniform(0, 1)
+        infection_result = rng.uniform(0, 1)
         if infection_result > prob_of_not_being_infected:
             infected.add(dst)
     messages.clear()

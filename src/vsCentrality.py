@@ -7,6 +7,7 @@ from infectionSimulation import simulate_infection
 from numpy.random import Generator, PCG64, SeedSequence
 
 from settings import *
+from statistics import *
 
 PROB_OF_BEING_INFECTED = 0.8
 
@@ -114,11 +115,13 @@ def centrality_analysis(filename: str, seed_set: set, node_budget: int, selected
     selected_nodes_centrality = find_best_node (nodes_centrality, node_budget, seed_set)
     print(f"Selected nodes (Centrality method): {selected_nodes_centrality}")
 
+    stats.simulation_type = "centrality"
     average_centrality = 0
     for _ in range(times):
         second_simulation_centrality = simulate_infection (seed_set, filename, prob, removed_nodes=selected_nodes_centrality)
         average_centrality += len(second_simulation_centrality)
     print(f"Average number of infected nodes, centrality method: {average_centrality/times}")
+    stats.simulation_type = "none"
 
     ratio = average_subtree/average_centrality
     print(f"Ratio between the two methods (lower = subtree method is better): {ratio}")

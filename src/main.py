@@ -9,6 +9,8 @@ from degreeNodes import degree_nodes
 from cc import compare_cc
 from numpy.random import Generator, PCG64, SeedSequence
 from settings import *
+from statistics import *
+import matplotlib.pyplot as plt
 
 filename = sys.argv[1]
 node_budget = int(sys.argv[2])
@@ -38,25 +40,49 @@ def adversarial_attack_at_influence_maximization ():
     
     print('\n\n---- minimize infection with subtrees ----\n\n')
     
+    #stats.simulation_type = "subtrees"
     subtree = subtrees_methods(filename, set(seed_set), node_budget, prob_of_being_infected)
     
     print('\n\n---- minimize infection with centrality ----\n\n')
     
+    #stats.simulation_type = "centrality"
     centrality = centrality_analysis(filename, set(seed_set), node_budget, set(subtree), prob_of_being_infected)
 
     print('\n\n---- minimize infection with random ----\n\n')
 
+    #stats.simulation_type = "random"
     random = random_analysis(filename, set(seed_set), node_budget, prob_of_being_infected, set(subtree))
     
     print('\n\n---- result comparison ----\n\n')
     
-    result_comparison(filename, set(seed_set), node_budget, set(subtree), set(centrality), set(random), prob_of_being_infected)
+    #result_comparison(filename, set(seed_set), node_budget, set(subtree), set(centrality), set(random), prob_of_being_infected)
     
-    degree_nodes(filename, subtree, centrality)
+    #degree_nodes(filename, subtree, centrality)
     
-    compare_cc(filename, subtree, centrality)
+    #compare_cc(filename, subtree, centrality)
     
-    return subtree
+    return subtree, centrality, random
+
+def plot_average_infection(average_infection, time):
+    '''
+    function to plot the average of the node speed as a function of time
+    '''
+    label = 'Average infected nodes'
+    plt.plot(time, average_infection, label=label)
+    plt.xlabel('Epoch')
+    plt.ylabel('Average infected nodes')
+    plt.title('Average number of nodes infected as a function of time epochs')
+    plt.grid()
+
+def plot_results(time, mean, variance, lower_bound, upper_bound):
+    '''
+    function to plot the mean, the variance, the lower bound and the upper bound of the average number of infected nodes by time
+    '''
+    plt.plot(time, mean, label='Mean')
+    plt.fill_between(time, lower_bound, upper_bound, alpha=0.2, label='95% Confidence interval')
+    plt.legend(loc='upper right')
+    #plt.ylim(0, V_MAX)
+    plt.show()
 
 if __name__ == '__main__':
     """
@@ -76,7 +102,40 @@ if __name__ == '__main__':
         rng = generators[i]
         selected_nodes = adversarial_attack_at_influence_maximization()
         total_selected_nodes.append(selected_nodes)
+        stats.subtrees_attack_set.append(selected_nodes[0])
+        stats.centrality_attack_set.append(selected_nodes[1])
+        stats.random_attack_set.append(selected_nodes[2])
+
     
     print('total selected nodes:')
     for selected_nodes in total_selected_nodes:
         print(selected_nodes)
+
+    print('subtrees infected nodes by time:')
+    print(stats.subtrees_infected_nodes_by_time)
+
+    print('centrality infected nodes by time:')
+    print(stats.centrality_infected_nodes_by_time)
+    
+    print('random infected nodes by time:')
+    print(stats.random_infected_nodes_by_time)
+
+    stats.compute_statistics()
+
+    print('subtrees average infected:')
+    print(stats.subtrees_average_infected)
+
+    print('subtrees_infected_nodes_by_time:')
+    print(stats.subtrees_infected_nodes_by_time)
+
+    #plot_average_infection(stats.ratio_list, range(len(stats.ratio_list)))
+    #plot_results(range(len(stats.ratio_list)), stats.subtrees_mean, stats.subtrees_variance, stats.subtrees_lower_bound, stats.subtrees_upper_bound)
+    
+    plot_average_infection(stats.centrality_average_infected, range(len(stats.centrality_average_infected)))
+    plot_results(range(len(stats.centrality_average_infected)), stats.centrality_average_infected, stats.centrality_variance, stats.centrality_lower_bound, stats.centrality_upper_bound)
+
+    plot_average_infection(stats.centrality_average_infected, range(len(stats.centrality_average_infected)))
+    plot_results(range(len(stats.centrality_average_infected)), stats.centrality_average_infected, stats.centrality_variance, stats.centrality_lower_bound, stats.centrality_upper_bound)
+
+    plot_average_infection(stats.random_average_infected, range(len(stats.random_average_infected)))
+    plot_results(range(len(stats.random_average_infected)), stats.random_average_infected, stats.random_variance, stats.random_lower_bound, stats.random_upper_bound)
