@@ -267,7 +267,7 @@ def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob):
         first_simulation = simulate_infection (seed_set, filename, prob, no_prevention)
         total_length += len(first_simulation)
 
-    print(f"Infected nodes first simulation:",  total_length // times)
+    #print(f"Infected nodes first simulation:",  total_length // times)
     
     # initialize the list of vrr paths if the graph is static
     vrr_paths = list()
@@ -289,7 +289,7 @@ def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob):
         flat_vrr_paths = [node for path in vrr_paths for node in path]
         selected_nodes = find_best_node ({node: flat_vrr_paths.count(node) for node in set(flat_vrr_paths)}, node_budget)
         
-    print(f"Selected nodes (Subtree method): {selected_nodes}")
+    #print(f"Selected nodes (Subtree method): {selected_nodes}")
 
     prevention = list()
     
@@ -300,12 +300,13 @@ def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob):
         #print(f"Infected nodes: {len(second_simulation)}")
 
     second_simulation = total_infected // times
-    print(f"Infected nodes second infection: {second_simulation}")
+    #print(f"Infected nodes second infection: {second_simulation}")
 
     ratio = second_simulation / len(first_simulation)
-    print(f"Ratio: {ratio}")
+    #print(f"Ratio: {ratio}")
     
-    return selected_nodes
+    return selected_nodes, ratio
+
 
 # ------------------------- Main -------------------------
 

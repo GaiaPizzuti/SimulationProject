@@ -118,9 +118,9 @@ def simulate_infection(seed_set : set, filename : str, prob: float, plot=[], rem
     file = [row for row in open(filename, "r")]
     
     if int(file[0].split(split_char)[2]) == -1:
-        infected, infection_tree = infect_static_graph(infected, split_char, file, prob, plot, removed_nodes, nodes, nodes_random)
+        infected, _ = infect_static_graph(infected, split_char, file, prob, plot, removed_nodes, nodes, nodes_random)
     else:
-        infected = infect_temporal_graph(infected, messages, last_unixts, split_char, file, prob, plot, removed_nodes, nodes, nodes_random)
+        infected = infect_temporal_graph(infected, messages, last_unixts, split_char, file, prob, plot, removed_nodes, nodes, nodes_random) # type: ignore
     
     
     return infected
