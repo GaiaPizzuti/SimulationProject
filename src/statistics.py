@@ -9,6 +9,7 @@ class Statistics:
         self.random_attack_set = []
 
         self.current_infected_nodes = []
+        self.naive_infected_nodes_by_time = []
         self.subtrees_infected_nodes_by_time = []
         self.centrality_infected_nodes_by_time = []
         self.random_infected_nodes_by_time = []
@@ -20,6 +21,8 @@ class Statistics:
             self.centrality_infected_nodes_by_time.append(self.current_infected_nodes)
         elif self.simulation_type == "random":
             self.random_infected_nodes_by_time.append(self.current_infected_nodes)
+        else:
+            self.naive_infected_nodes_by_time.append(self.current_infected_nodes)
         self.current_infected_nodes = []
     
     def compute_statistics(self):
@@ -31,6 +34,7 @@ class Statistics:
         self.subtrees_average_infected = compute_average(self.subtrees_infected_nodes_by_time)
         self.centrality_average_infected = compute_average(self.centrality_infected_nodes_by_time)
         self.random_average_infected = compute_average(self.random_infected_nodes_by_time)
+        self.naive_average_infected = compute_average(self.naive_infected_nodes_by_time)
 
         CONFIDENCE_INTERVAL = 0.95
         z = norm.ppf(1 - (1 - CONFIDENCE_INTERVAL) / 2)
@@ -77,7 +81,6 @@ class Statistics:
         self.subtrees_infected_nodes_by_time, self.subtrees_mean, self.subtrees_variance, self.subtrees_lower_bound, self.subtrees_upper_bound = compute_variance(self.subtrees_average_infected)
         self.centrality_infected_nodes_by_time, self.centrality_mean, self.centrality_variance, self.centrality_lower_bound, self.centrality_upper_bound = compute_variance(self.centrality_average_infected)
         self.random_infected_nodes_by_time, self.random_mean, self.random_variance, self.random_lower_bound, self.random_upper_bound = compute_variance(self.random_average_infected)
+        self.naive_infected_nodes_by_time, self.naive_mean, self.naive_variance, self.naive_lower_bound, self.naive_upper_bound = compute_variance(self.naive_average_infected)
 
-
-
-stats = Statistics()
+stats = Statistics() # type: ignore

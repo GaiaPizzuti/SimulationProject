@@ -10,7 +10,7 @@ from igraph import Graph
 from numpy.random import Generator, PCG64, SeedSequence
 
 from settings import *
-from statistics import *
+from statistics import stats # type: ignore
 
 
 # ------------------------- class Node -------------------------

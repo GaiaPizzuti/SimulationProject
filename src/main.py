@@ -1,5 +1,6 @@
 from copy import deepcopy
 import sys
+
 from temporalGraph import influence_maximization, spread_infection, get_random_seed_set
 from subTreeInfection import subtrees_methods
 from vsCentrality import centrality_analysis
@@ -9,7 +10,7 @@ from degreeNodes import degree_nodes
 from cc import compare_cc
 from numpy.random import Generator, PCG64, SeedSequence
 from settings import *
-from statistics import *
+from statistics import stats # type: ignore
 import matplotlib.pyplot as plt
 
 filename = sys.argv[1]
@@ -84,6 +85,21 @@ def plot_results(time, mean, variance, lower_bound, upper_bound):
     #plt.ylim(0, V_MAX)
     plt.show()
 
+def plot_infections():
+    '''
+    function to plot the number of infected nodes by time
+    '''
+    plt.plot(stats.naive_infected_nodes_by_time, label='Naive')
+    plt.plot(stats.subtrees_infected_nodes_by_time, label='Subtrees')
+    plt.plot(stats.centrality_infected_nodes_by_time, label='Centrality')
+    plt.plot(stats.random_infected_nodes_by_time, label='Random')
+    plt.xlabel('Epoch')
+    plt.ylabel('Number of infected nodes')
+    plt.title('Number of infected nodes as a function of time epochs')
+    plt.legend()
+    plt.grid()
+    plt.show()
+
 if __name__ == '__main__':
     """
     Args:
@@ -131,11 +147,13 @@ if __name__ == '__main__':
     #plot_average_infection(stats.ratio_list, range(len(stats.ratio_list)))
     #plot_results(range(len(stats.ratio_list)), stats.subtrees_mean, stats.subtrees_variance, stats.subtrees_lower_bound, stats.subtrees_upper_bound)
     
-    plot_average_infection(stats.centrality_average_infected, range(len(stats.centrality_average_infected)))
-    plot_results(range(len(stats.centrality_average_infected)), stats.centrality_average_infected, stats.centrality_variance, stats.centrality_lower_bound, stats.centrality_upper_bound)
+    #plot_average_infection(stats.centrality_average_infected, range(len(stats.centrality_average_infected)))
+    #plot_results(range(len(stats.centrality_average_infected)), stats.centrality_average_infected, stats.centrality_variance, stats.centrality_lower_bound, stats.centrality_upper_bound)
 
-    plot_average_infection(stats.centrality_average_infected, range(len(stats.centrality_average_infected)))
-    plot_results(range(len(stats.centrality_average_infected)), stats.centrality_average_infected, stats.centrality_variance, stats.centrality_lower_bound, stats.centrality_upper_bound)
+    #plot_average_infection(stats.centrality_average_infected, range(len(stats.centrality_average_infected)))
+    #plot_results(range(len(stats.centrality_average_infected)), stats.centrality_average_infected, stats.centrality_variance, stats.centrality_lower_bound, stats.centrality_upper_bound)
 
-    plot_average_infection(stats.random_average_infected, range(len(stats.random_average_infected)))
-    plot_results(range(len(stats.random_average_infected)), stats.random_average_infected, stats.random_variance, stats.random_lower_bound, stats.random_upper_bound)
+    #plot_average_infection(stats.random_average_infected, range(len(stats.random_average_infected)))
+    #plot_results(range(len(stats.random_average_infected)), stats.random_average_infected, stats.random_variance, stats.random_lower_bound, stats.random_upper_bound)
+
+    plot_infections()
