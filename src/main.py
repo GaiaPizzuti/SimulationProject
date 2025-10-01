@@ -1,13 +1,11 @@
 from copy import deepcopy
 import sys
+import numpy as np
 
 from temporalGraph import influence_maximization, spread_infection, get_random_seed_set
 from subTreeInfection import subtrees_methods
 from vsCentrality import centrality_analysis
 from vsRandom import random_analysis
-from comparison import result_comparison
-from degreeNodes import degree_nodes
-from cc import compare_cc
 from numpy.random import Generator, PCG64, SeedSequence
 from settings import *
 from statistics import stats # type: ignore
@@ -75,7 +73,7 @@ def plot_average_infection(average_infection, time):
     plt.title('Average number of nodes infected as a function of time epochs')
     plt.grid()
 
-def plot_results(time, mean, variance, lower_bound, upper_bound):
+def plot_results(time, mean, lower_bound, upper_bound):
     '''
     function to plot the mean, the variance, the lower bound and the upper bound of the average number of infected nodes by time
     '''
@@ -144,16 +142,20 @@ if __name__ == '__main__':
     print('subtrees_infected_nodes_by_time:')
     print(stats.subtrees_infected_nodes_by_time)
 
-    #plot_average_infection(stats.ratio_list, range(len(stats.ratio_list)))
-    #plot_results(range(len(stats.ratio_list)), stats.subtrees_mean, stats.subtrees_variance, stats.subtrees_lower_bound, stats.subtrees_upper_bound)
+    #plot_average_infection(stats.subtree_ratio_list, range(len(stats.subtree_ratio_list)))
+    #plot_results(range(len(stats.subtree_ratio_list)), stats.subtrees_mean, stats.subtrees_lower_bound, stats.subtrees_upper_bound)
     
     #plot_average_infection(stats.centrality_average_infected, range(len(stats.centrality_average_infected)))
-    #plot_results(range(len(stats.centrality_average_infected)), stats.centrality_average_infected, stats.centrality_variance, stats.centrality_lower_bound, stats.centrality_upper_bound)
-
-    #plot_average_infection(stats.centrality_average_infected, range(len(stats.centrality_average_infected)))
-    #plot_results(range(len(stats.centrality_average_infected)), stats.centrality_average_infected, stats.centrality_variance, stats.centrality_lower_bound, stats.centrality_upper_bound)
+    #plot_results(range(len(stats.centrality_average_infected)), stats.centrality_average_infected, stats.centrality_lower_bound, stats.centrality_upper_bound)
 
     #plot_average_infection(stats.random_average_infected, range(len(stats.random_average_infected)))
-    #plot_results(range(len(stats.random_average_infected)), stats.random_average_infected, stats.random_variance, stats.random_lower_bound, stats.random_upper_bound)
+    #plot_results(range(len(stats.random_average_infected)), stats.random_average_infected, stats.random_lower_bound, stats.random_upper_bound)
 
     plot_infections()
+
+# note riunione
+# per fare i confidence interval runnare x volte il main e salvare i risultati
+# poi fare la media e varianza dei risultati
+# salvare il numero di nodi finali infetti, numero di epoch totali, tempo di esecuzione
+# fare un plot con la media e i confidence interval
+# - cambiare il numero di rng per ogni algoritmo

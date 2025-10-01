@@ -309,6 +309,7 @@ def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob):
 
     ratio = second_simulation / len(first_simulation)
     print(f"Ratio: {ratio}")
+    stats.subtree_ratio_list.append(ratio)
     
     return selected_nodes
 

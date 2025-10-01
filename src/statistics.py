@@ -13,6 +13,10 @@ class Statistics:
         self.subtrees_infected_nodes_by_time = []
         self.centrality_infected_nodes_by_time = []
         self.random_infected_nodes_by_time = []
+        
+        self.random_ratio_list = []
+        self.centrality_ratio_list = []
+        self.subtree_ratio_list = []
 
     def save_infected_nodes_list(self):
         if self.simulation_type == "subtrees":

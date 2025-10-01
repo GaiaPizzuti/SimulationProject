@@ -7,7 +7,7 @@ from subTreeInfection import subtrees_methods
 from numpy.random import Generator, PCG64, SeedSequence
 
 from settings import *
-from statistics import *
+from statistics import stats # type: ignore
 
 PROB_OF_BEING_INFECTED = 0.2
 
@@ -93,6 +93,7 @@ def random_analysis(filename: str, seed_set: set, node_budget: int, prob: float 
 
     ratio = average_subtree/average_random
     print(f"Ratio between the two methods (lower = subtree method is better): {ratio}")
+    stats.random_ratio_list.append(ratio)
     
     return selected_node_random
 
