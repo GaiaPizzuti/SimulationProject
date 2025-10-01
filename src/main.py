@@ -1,14 +1,15 @@
 from copy import deepcopy
 import sys
+import numpy as np
+
 from temporalGraph import influence_maximization, spread_infection, get_random_seed_set
 from subTreeInfection import subtrees_methods
 from vsCentrality import centrality_analysis
 from vsRandom import random_analysis
-from comparison import result_comparison
-from degreeNodes import degree_nodes
-from cc import compare_cc
+from numpy.random import Generator, PCG64, SeedSequence
 from settings import *
-import numpy as np
+from statistics import stats # type: ignore
+import matplotlib.pyplot as plt
 
 filename = sys.argv[1]
 node_budget = int(sys.argv[2])
@@ -38,50 +39,63 @@ def adversarial_attack_at_influence_maximization ():
     
     #print('\n\n---- minimize infection with subtrees ----\n\n')
     
-    subtree, ratio = subtrees_methods(filename, set(seed_set), node_budget, prob_of_being_infected)
+    #stats.simulation_type = "subtrees"
+    subtree = subtrees_methods(filename, set(seed_set), node_budget, prob_of_being_infected)
     
-    """ print('\n\n---- minimize infection with centrality ----\n\n')
+    print('\n\n---- minimize infection with centrality ----\n\n')
     
+    #stats.simulation_type = "centrality"
     centrality = centrality_analysis(filename, set(seed_set), node_budget, set(subtree), prob_of_being_infected)
 
     print('\n\n---- minimize infection with random ----\n\n')
 
+    #stats.simulation_type = "random"
     random = random_analysis(filename, set(seed_set), node_budget, prob_of_being_infected, set(subtree))
     
     print('\n\n---- result comparison ----\n\n')
     
-    result_comparison(filename, set(seed_set), node_budget, set(subtree), set(centrality), set(random), prob_of_being_infected)
+    #result_comparison(filename, set(seed_set), node_budget, set(subtree), set(centrality), set(random), prob_of_being_infected)
     
-    degree_nodes(filename, subtree, centrality)
+    #degree_nodes(filename, subtree, centrality)
     
-    compare_cc(filename, subtree, centrality) """
+    #compare_cc(filename, subtree, centrality)
     
-    return subtree, ratio
+    return subtree, centrality, random
 
-def plot_results(means, ratio_infection, lower_bounds, upper_bounds, confidence):
-    """
-    function to plot the ratio between the number of infected nodes after the attack and the number of infected nodes before the attack
-    repeat the simulation times_main times
+def plot_average_infection(average_infection, time):
+    '''
+    function to plot the average of the node speed as a function of time
+    '''
+    label = 'Average infected nodes'
+    plt.plot(time, average_infection, label=label)
+    plt.xlabel('Epoch')
+    plt.ylabel('Average infected nodes')
+    plt.title('Average number of nodes infected as a function of time epochs')
+    plt.grid()
 
-    Args:
-        - means: the list of the means of the number of infected nodes
-        - std_devs: the list of the standard deviations of the number of infected nodes
-        - variances: the list of the variances of the number of infected nodes
-        - ratio_infection: the list of the ratio of infection
-    """
+def plot_results(time, mean, lower_bound, upper_bound):
+    '''
+    function to plot the mean, the variance, the lower bound and the upper bound of the average number of infected nodes by time
+    '''
+    plt.plot(time, mean, label='Mean')
+    plt.fill_between(time, lower_bound, upper_bound, alpha=0.2, label='95% Confidence interval')
+    plt.legend(loc='upper right')
+    #plt.ylim(0, V_MAX)
+    plt.show()
 
-    import matplotlib.pyplot as plt
-    import seaborn as sns
-
-    sns.set_theme(style="whitegrid")
-    plt.figure(figsize=(10, 5))
-    #plt.plot(ratio_infection, label='ratio of infection')
-    plt.plot(means, label='mean')
-    # fill the area between the confidence intervals
-    plt.fill_between(range(times_main), means - confidence, means + confidence, color='blue', alpha=0.1)
-    plt.xlabel('time')
-    plt.ylabel('ratio')
+def plot_infections():
+    '''
+    function to plot the number of infected nodes by time
+    '''
+    plt.plot(stats.naive_infected_nodes_by_time, label='Naive')
+    plt.plot(stats.subtrees_infected_nodes_by_time, label='Subtrees')
+    plt.plot(stats.centrality_infected_nodes_by_time, label='Centrality')
+    plt.plot(stats.random_infected_nodes_by_time, label='Random')
+    plt.xlabel('Epoch')
+    plt.ylabel('Number of infected nodes')
+    plt.title('Number of infected nodes as a function of time epochs')
     plt.legend()
+    plt.grid()
     plt.show()
 
 if __name__ == '__main__':
@@ -98,44 +112,50 @@ if __name__ == '__main__':
     """
     
     total_selected_nodes = []
-    means = []
-    std_devs = []
-    variances = []
-    ratio_infection = []
-    lower_bounds = []
-    upper_bounds = []
-    for time in range(times_main):
-        print('time:', time)
-        selected_nodes, ratio = adversarial_attack_at_influence_maximization()
+    for i in range(times_main):
+        rng = generators[i]
+        selected_nodes = adversarial_attack_at_influence_maximization()
         total_selected_nodes.append(selected_nodes)
-        ratio_infection.append(ratio)
+        stats.subtrees_attack_set.append(selected_nodes[0])
+        stats.centrality_attack_set.append(selected_nodes[1])
+        stats.random_attack_set.append(selected_nodes[2])
 
     
-        #print('total selected nodes:')
-        #for selected_nodes in total_selected_nodes:
-            #print(selected_nodes)
-        
-        #print('---- end ----')
+    print('total selected nodes:')
+    for selected_nodes in total_selected_nodes:
+        print(selected_nodes)
 
-        # calculate the mean, the standard deviation and the variance of the ratio of infection
-        mean = np.mean(ratio_infection)
-        #print('mean ratio:', mean_ratio)
-        variance = np.var(ratio_infection)
-        #print('variance ratio:', variance_ratio)
-        std_dev = np.std(ratio_infection)
-        #print('standard devation ratio:', std_dev_ratio)
+    print('subtrees infected nodes by time:')
+    print(stats.subtrees_infected_nodes_by_time)
 
-        means.append(mean)
-        std_devs.append(std_dev)
-        variances.append(variance)
+    print('centrality infected nodes by time:')
+    print(stats.centrality_infected_nodes_by_time)
+    
+    print('random infected nodes by time:')
+    print(stats.random_infected_nodes_by_time)
 
-        tstudent = 2.2010
-        lb = mean - tstudent * np.sqrt(variance/len(ratio_infection))
-        ub = mean + tstudent * np.sqrt(variance/len(ratio_infection))
+    stats.compute_statistics()
 
-        lower_bounds.append(lb)
-        upper_bounds.append(ub)
+    print('subtrees average infected:')
+    print(stats.subtrees_average_infected)
 
-    confidence = 1.96 * np.std(ratio_infection) / np.sqrt(times_main)
-    print(f"CI: {confidence}")
-    plot_results(means, ratio_infection, lower_bounds, upper_bounds, confidence)
+    print('subtrees_infected_nodes_by_time:')
+    print(stats.subtrees_infected_nodes_by_time)
+
+    #plot_average_infection(stats.subtree_ratio_list, range(len(stats.subtree_ratio_list)))
+    #plot_results(range(len(stats.subtree_ratio_list)), stats.subtrees_mean, stats.subtrees_lower_bound, stats.subtrees_upper_bound)
+    
+    #plot_average_infection(stats.centrality_average_infected, range(len(stats.centrality_average_infected)))
+    #plot_results(range(len(stats.centrality_average_infected)), stats.centrality_average_infected, stats.centrality_lower_bound, stats.centrality_upper_bound)
+
+    #plot_average_infection(stats.random_average_infected, range(len(stats.random_average_infected)))
+    #plot_results(range(len(stats.random_average_infected)), stats.random_average_infected, stats.random_lower_bound, stats.random_upper_bound)
+
+    plot_infections()
+
+# note riunione
+# per fare i confidence interval runnare x volte il main e salvare i risultati
+# poi fare la media e varianza dei risultati
+# salvare il numero di nodi finali infetti, numero di epoch totali, tempo di esecuzione
+# fare un plot con la media e i confidence interval
+# - cambiare il numero di rng per ogni algoritmo

@@ -7,8 +7,10 @@ import random
 from operator import itemgetter
 from infectionSimulation import simulate_infection, infect_static_graph
 from igraph import Graph
+from numpy.random import Generator, PCG64, SeedSequence
 
 from settings import *
+from statistics import stats # type: ignore
 
 
 # ------------------------- class Node -------------------------
@@ -144,7 +146,7 @@ def update_infection_tree(messages : dict[int, list[tuple[int, int]]], infected 
             
             for src, state in data:
                 if state == 1:
-                    infection_result = random.uniform(0, 1)
+                    infection_result = rng.uniform(0, 1)
                     if infection_result <= prob_of_being_infected:
                         new_node = Node(dst, unixts)
                         add_infected_edges (new_node, forest, src)
@@ -233,7 +235,7 @@ def sample_vrr_path(forest: Graph, seed_set: set[int]):
     if len(filtered_forest) == 0:
         return []
     
-    node = random.choice(filtered_forest)
+    node = rng.choice(filtered_forest)
     
     # find the path from the node to the root
     path = []
@@ -293,17 +295,21 @@ def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob):
 
     prevention = list()
     
+    stats.simulation_type = "subtrees"
     total_infected = 0
     for _ in range(times):
         second_simulation = simulate_infection(seed_set, filename, prob, prevention, selected_nodes)
         total_infected += len(second_simulation)
         #print(f"Infected nodes: {len(second_simulation)}")
+    
+    stats.simulation_type = "none"
 
     second_simulation = total_infected // times
     #print(f"Infected nodes second infection: {second_simulation}")
 
     ratio = second_simulation / len(first_simulation)
-    #print(f"Ratio: {ratio}")
+    print(f"Ratio: {ratio}")
+    stats.subtree_ratio_list.append(ratio)
     
     return selected_nodes, ratio
 

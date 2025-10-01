@@ -7,3 +7,10 @@ output.txt
 *.pyc
 __pycache__/
 *.py[cod]
+
+bin/
+data/cliques_small.txt
+lib/
+lib64
+pyvenv.cfg
+test.py
