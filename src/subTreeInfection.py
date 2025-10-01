@@ -311,7 +311,7 @@ def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob):
     print(f"Ratio: {ratio}")
     stats.subtree_ratio_list.append(ratio)
     
-    return selected_nodes, ratio
+    return selected_nodes
 
 
 # ------------------------- Main -------------------------
