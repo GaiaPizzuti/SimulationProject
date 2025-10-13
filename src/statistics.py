@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.stats import norm, t
+from settings import *
 
 class Statistics:
     def __init__(self):
@@ -17,6 +18,10 @@ class Statistics:
         self.random_ratio_list = []
         self.centrality_ratio_list = []
         self.subtree_ratio_list = []
+
+        self.subtrees_sample_means_array = []        
+        self.centrality_sample_means_array = []
+        self.random_sample_means_array = []        
 
     def save_infected_nodes_list(self):
         if self.simulation_type == "subtrees":
@@ -86,5 +91,69 @@ class Statistics:
         self.centrality_infected_nodes_by_time, self.centrality_mean, self.centrality_variance, self.centrality_lower_bound, self.centrality_upper_bound = compute_variance(self.centrality_average_infected)
         self.random_infected_nodes_by_time, self.random_mean, self.random_variance, self.random_lower_bound, self.random_upper_bound = compute_variance(self.random_average_infected)
         self.naive_infected_nodes_by_time, self.naive_mean, self.naive_variance, self.naive_lower_bound, self.naive_upper_bound = compute_variance(self.naive_average_infected)
+
+    def compute_average_infected_nodes_output_analysis(self):
+
+        def compute_sample_means_array(infected_nodes_by_time):
+            sample_means_array = []
+            # divide the infected_nodes_by_time into chunks of size times
+            for i in range(0, len(infected_nodes_by_time), times):
+                chunk = infected_nodes_by_time[i:i+times]
+                chunk_means = [lst[-1] for lst in chunk]
+                # compute the mean of the means
+                sample_mean = np.mean(chunk_means)
+                sample_means_array.append(sample_mean)
+            return sample_means_array
+        
+        self.subtrees_sample_means_array = compute_sample_means_array(self.subtrees_infected_nodes_by_time)
+        self.centrality_sample_means_array = compute_sample_means_array(self.centrality_infected_nodes_by_time)
+        self.random_sample_means_array = compute_sample_means_array(self.random_infected_nodes_by_time)
+        self.naive_sample_means_array = compute_sample_means_array(self.naive_infected_nodes_by_time)
+
+        CONFIDENCE_INTERVAL = 0.95
+        z = norm.ppf(1 - (1 - CONFIDENCE_INTERVAL) / 2)
+        def compute_independent_replications_estimator(sample_means_array):
+            mean = []
+            variance = []
+            lower_bound = []
+            upper_bound = []
+            infections_at_time = []
+            LENGTH = len(sample_means_array)
+            print("Length of sample means array:", LENGTH)
+            for index in range(len(sample_means_array)):
+                infections_at_time.append(sample_means_array[index])
+                grand_mean = np.mean(sample_means_array)
+                mean.append(grand_mean)
+
+                variance_curr = 0
+                for i in range(len(sample_means_array)):
+                    variance_curr = variance_curr + ((sample_means_array[i] - grand_mean)**2)
+                variance_curr *= 1/(len(sample_means_array) - 1)
+
+                t_student = t.ppf(1 - (1 - CONFIDENCE_INTERVAL) / 2, df=LENGTH - 1)
+                # print("t_student value:", t_student, "for", LENGTH - 1, "degrees of freedom", "and confidence interval", CONFIDENCE_INTERVAL)
+
+                # variance.append(np.var(sample_means_array))
+                variance.append(variance_curr)
+
+                std_dev_speed = np.sqrt(variance[-1])
+                margin_error = z * std_dev_speed / np.sqrt(LENGTH)
+
+                lb0 = grand_mean - t_student * np.sqrt(variance_curr/LENGTH)
+                ub0 = grand_mean + t_student * np.sqrt(variance_curr/LENGTH)
+                
+                #lb0 = grand_mean - margin_error
+                #ub0 = grand_mean + margin_error
+
+                lower_bound.append(lb0)
+                upper_bound.append(ub0)
+
+            return sample_means_array, mean, variance, lower_bound, upper_bound
+        
+        self.subtrees_infected_nodes_by_time, self.subtrees_mean, self.subtrees_variance, self.subtrees_lower_bound, self.subtrees_upper_bound = compute_independent_replications_estimator(self.subtrees_sample_means_array)
+        self.centrality_infected_nodes_by_time, self.centrality_mean, self.centrality_variance, self.centrality_lower_bound, self.centrality_upper_bound = compute_independent_replications_estimator(self.centrality_sample_means_array)
+        self.random_infected_nodes_by_time, self.random_mean, self.random_variance, self.random_lower_bound, self.random_upper_bound = compute_independent_replications_estimator(self.random_sample_means_array)
+        self.naive_infected_nodes_by_time, self.naive_mean, self.naive_variance, self.naive_lower_bound, self.naive_upper_bound = compute_independent_replications_estimator(self.naive_sample_means_array)
+
 
 stats = Statistics() # type: ignore

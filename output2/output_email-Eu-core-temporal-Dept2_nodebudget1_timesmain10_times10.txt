@@ -1,0 +1,280 @@
+Setting times_main to 10 and times to 10 from command line arguments.
+Ratio: 0.9776119402985075
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {165}
+Average number of infected nodes, subtree method: 132.4
+Selected nodes (Centrality method): [153]
+Average number of infected nodes, centrality method: 132.2
+Ratio between the two methods (lower = subtree method is better): 1.0015128593040847
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {165}
+Average number of infected nodes, subtree method: 134.3
+Selected nodes (Random method): {np.int64(0)}
+Average number of infected nodes, random method: 131.4
+Ratio between the two methods (lower = subtree method is better): 1.0220700152207
+
+
+---- result comparison ----
+
+
+Ratio: 0.9924242424242424
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {156}
+Average number of infected nodes, subtree method: 131.9
+Selected nodes (Centrality method): [153]
+Average number of infected nodes, centrality method: 132.1
+Ratio between the two methods (lower = subtree method is better): 0.9984859954579863
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {156}
+Average number of infected nodes, subtree method: 132.6
+Selected nodes (Random method): {np.int64(43)}
+Average number of infected nodes, random method: 131.4
+Ratio between the two methods (lower = subtree method is better): 1.0091324200913243
+
+
+---- result comparison ----
+
+
+Ratio: 0.9849624060150376
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {165}
+Average number of infected nodes, subtree method: 131.9
+Selected nodes (Centrality method): [153]
+Average number of infected nodes, centrality method: 132.5
+Ratio between the two methods (lower = subtree method is better): 0.9954716981132076
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {165}
+Average number of infected nodes, subtree method: 131.9
+Selected nodes (Random method): {np.int64(134)}
+Average number of infected nodes, random method: 131.5
+Ratio between the two methods (lower = subtree method is better): 1.003041825095057
+
+
+---- result comparison ----
+
+
+Ratio: 1.0153846153846153
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {156}
+Average number of infected nodes, subtree method: 131.5
+Selected nodes (Centrality method): [153]
+Average number of infected nodes, centrality method: 131.3
+Ratio between the two methods (lower = subtree method is better): 1.0015232292460015
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {156}
+Average number of infected nodes, subtree method: 131.7
+Selected nodes (Random method): {np.int64(130)}
+Average number of infected nodes, random method: 130.0
+Ratio between the two methods (lower = subtree method is better): 1.013076923076923
+
+
+---- result comparison ----
+
+
+Ratio: 0.9850746268656716
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {165}
+Average number of infected nodes, subtree method: 132.3
+Selected nodes (Centrality method): [153]
+Average number of infected nodes, centrality method: 131.7
+Ratio between the two methods (lower = subtree method is better): 1.0045558086560364
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {165}
+Average number of infected nodes, subtree method: 132.0
+Selected nodes (Random method): {np.int64(21)}
+Average number of infected nodes, random method: 132.4
+Ratio between the two methods (lower = subtree method is better): 0.9969788519637462
+
+
+---- result comparison ----
+
+
+Ratio: 0.9849624060150376
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {165}
+Average number of infected nodes, subtree method: 132.4
+Selected nodes (Centrality method): [153]
+Average number of infected nodes, centrality method: 132.7
+Ratio between the two methods (lower = subtree method is better): 0.9977392614920875
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {165}
+Average number of infected nodes, subtree method: 131.9
+Selected nodes (Random method): {np.int64(87)}
+Average number of infected nodes, random method: 132.3
+Ratio between the two methods (lower = subtree method is better): 0.9969765684051398
+
+
+---- result comparison ----
+
+
+Ratio: 0.9850746268656716
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {165}
+Average number of infected nodes, subtree method: 131.9
+Selected nodes (Centrality method): [153]
+Average number of infected nodes, centrality method: 131.8
+Ratio between the two methods (lower = subtree method is better): 1.0007587253414265
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {165}
+Average number of infected nodes, subtree method: 132.6
+Selected nodes (Random method): {np.int64(55)}
+Average number of infected nodes, random method: 133.1
+Ratio between the two methods (lower = subtree method is better): 0.9962434259954921
+
+
+---- result comparison ----
+
+
+Ratio: 1.0
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {156}
+Average number of infected nodes, subtree method: 132.3
+Selected nodes (Centrality method): [153]
+Average number of infected nodes, centrality method: 131.8
+Ratio between the two methods (lower = subtree method is better): 1.0037936267071321
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {156}
+Average number of infected nodes, subtree method: 133.0
+Selected nodes (Random method): {np.int64(159)}
+Average number of infected nodes, random method: 132.6
+Ratio between the two methods (lower = subtree method is better): 1.0030165912518854
+
+
+---- result comparison ----
+
+
+Ratio: 0.9777777777777777
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {165}
+Average number of infected nodes, subtree method: 132.0
+Selected nodes (Centrality method): [153]
+Average number of infected nodes, centrality method: 132.9
+Ratio between the two methods (lower = subtree method is better): 0.9932279909706546
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {165}
+Average number of infected nodes, subtree method: 132.0
+Selected nodes (Random method): {np.int64(108)}
+Average number of infected nodes, random method: 133.7
+Ratio between the two methods (lower = subtree method is better): 0.9872849663425579
+
+
+---- result comparison ----
+
+
+Ratio: 0.9924812030075187
+
+
+---- minimize infection with centrality ----
+
+
+Selected nodes (Subtree method): {156}
+Average number of infected nodes, subtree method: 131.5
+Selected nodes (Centrality method): [153]
+Average number of infected nodes, centrality method: 132.0
+Ratio between the two methods (lower = subtree method is better): 0.9962121212121212
+
+
+---- minimize infection with random ----
+
+
+Selected nodes (Subtree method): {156}
+Average number of infected nodes, subtree method: 133.1
+Selected nodes (Random method): {np.int64(90)}
+Average number of infected nodes, random method: 134.1
+Ratio between the two methods (lower = subtree method is better): 0.9925428784489188
+
+
+---- result comparison ----
+
+
+Length of sample means array: 10
+Length of sample means array: 10
+Length of sample means array: 10
+Length of sample means array: 32
+subtrees mean, variance, lower bound and upper bound:
+131.92 0.19066666666667162 131.60763658575056 132.23236341424942
+centrality mean, variance, lower bound and upper bound:
+132.1 0.23999999999999674 131.7495481192705 132.4504518807295
+random mean, variance, lower bound and upper bound:
+132.25 1.4961111111111016 131.37500675893676 133.12499324106324
+subtrees attack set:
+[[165], [156], [165], [156], [165], [165], [165], [156], [165], [156]]
+centrality attack set:
+[[153], [153], [153], [153], [153], [153], [153], [153], [153], [153]]
+random attack set:
+[{np.int64(0)}, {np.int64(43)}, {np.int64(134)}, {np.int64(130)}, {np.int64(21)}, {np.int64(87)}, {np.int64(55)}, {np.int64(159)}, {np.int64(108)}, {np.int64(90)}]
+Plot saved as plot_email-Eu-core-temporal-Dept2_nodebudget1_timesmain10_times10_subtrees.png
+Plot saved as plot_email-Eu-core-temporal-Dept2_nodebudget1_timesmain10_times10_centrality.png
+Plot saved as plot_email-Eu-core-temporal-Dept2_nodebudget1_timesmain10_times10_random.png
