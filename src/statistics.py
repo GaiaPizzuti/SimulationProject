@@ -18,6 +18,26 @@ class Statistics:
         self.centrality_ratio_list = []
         self.subtree_ratio_list = []
 
+        self.mean_subtrees = []
+        self.std_subtrees = 0
+        self.subtrees_variance = []
+        self.subtrees_lower_bound = []
+        self.subtrees_upper_bound = []
+
+        self.mean_centrality = []
+        self.std_centrality = 0
+        self.centrality_variance = []
+        self.centrality_lower_bound = []
+        self.centrality_upper_bound = []
+
+        self.mean_random = []
+        self.std_random = 0
+        self.random_variance = []
+        self.random_lower_bound = []
+        self.random_upper_bound = []
+
+        self.execution_times = []
+
     def save_infected_nodes_list(self):
         if self.simulation_type == "subtrees":
             self.subtrees_infected_nodes_by_time.append(self.current_infected_nodes)

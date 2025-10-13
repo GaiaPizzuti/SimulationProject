@@ -103,31 +103,29 @@ def centrality_analysis(filename: str, seed_set: set, node_budget: int, selected
     selected_nodes_subtree = find_best_node (removed_nodes_subtree, node_budget)
     print(f"Selected nodes subtree: {selected_nodes_subtree}") """
 
-    print(f"Selected nodes (Subtree method): {selected_nodes_subtree}")
+    # print(f"Selected nodes (Subtree method): {selected_nodes_subtree}")
 
     average_subtree = 0
     for _ in range(times):
         second_simulation_subtree = simulate_infection (seed_set, filename, prob, removed_nodes=selected_nodes_subtree)
         average_subtree += len(second_simulation_subtree)
-    print(f"Average number of infected nodes, subtree method: {average_subtree/times}")
+    # print(f"Average number of infected nodes, subtree method: {average_subtree/times}")
 
     # simulation and selection of the nodes with the centrality algorithm
     selected_nodes_centrality = find_best_node (nodes_centrality, node_budget, seed_set)
-    print(f"Selected nodes (Centrality method): {selected_nodes_centrality}")
+    # print(f"Selected nodes (Centrality method): {selected_nodes_centrality}")
 
     stats.simulation_type = "centrality"
     average_centrality = 0
     for _ in range(times):
         second_simulation_centrality = simulate_infection (seed_set, filename, prob, removed_nodes=selected_nodes_centrality)
         average_centrality += len(second_simulation_centrality)
-    print(f"Average number of infected nodes, centrality method: {average_centrality/times}")
+    # print(f"Average number of infected nodes, centrality method: {average_centrality/times}")
     stats.simulation_type = "none"
 
-    ratio = average_subtree/average_centrality
-    print(f"Ratio between the two methods (lower = subtree method is better): {ratio}")
-    stats.centrality_ratio_list.append(ratio)
+    mean_infected = average_centrality / times
     
-    return selected_nodes_centrality
+    return selected_nodes_centrality, mean_infected
 
 if __name__ == "__main__":
     

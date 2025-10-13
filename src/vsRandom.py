@@ -71,31 +71,29 @@ def random_analysis(filename: str, seed_set: set, node_budget: int, prob: float 
     if selected_nodes_subtree == []:
         selected_nodes_subtree = subtrees_methods(filename, set(seed_set), node_budget, prob)
    
-    print(f"Selected nodes (Subtree method): {selected_nodes_subtree}")
+    # print(f"Selected nodes (Subtree method): {selected_nodes_subtree}")
 
     average_subtree = 0
     for _ in range(times):
         second_simulation_subtree = simulate_infection (seed_set, filename, prob, removed_nodes=selected_nodes_subtree)
         average_subtree += len(second_simulation_subtree)
-    print(f"Average number of infected nodes, subtree method: {average_subtree/times}")
+    # print(f"Average number of infected nodes, subtree method: {average_subtree/times}")
 
     # simulation and selection of the nodes with the random algorithm
     selected_node_random = choose_random_nodes (node_budget, seed_set, nodes)
-    print(f"Selected nodes (Random method): {selected_node_random}")
+    # print(f"Selected nodes (Random method): {selected_node_random}")
     
     stats.simulation_type = "random"
     average_random = 0
     for _ in range(times):
         second_simulation_random = simulate_infection (seed_set, filename, prob, removed_nodes=selected_node_random)
         average_random += len(second_simulation_random)
-    print(f"Average number of infected nodes, random method: {average_random/times}")
+    # print(f"Average number of infected nodes, random method: {average_random/times}")
     stats.simulation_type = "none"
 
-    ratio = average_subtree/average_random
-    print(f"Ratio between the two methods (lower = subtree method is better): {ratio}")
-    stats.random_ratio_list.append(ratio)
+    mean_infected = average_random / times
     
-    return selected_node_random
+    return selected_node_random, mean_infected
 
 # ------------------------- Main -------------------------
 
