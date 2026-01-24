@@ -2,8 +2,8 @@ from copy import deepcopy
 import sys
 import numpy as np
 
-from temporalGraph import influence_maximization, spread_infection, get_random_seed_set
-from subTreeInfection import subtrees_methods
+from temporalGraph import influence_maximization, get_random_seed_set
+from subTreeInfection import subtrees_methods, simulate_infection
 from vsCentrality import centrality_analysis
 from vsRandom import random_analysis
 from numpy.random import Generator, PCG64, SeedSequence
@@ -34,8 +34,9 @@ def adversarial_attack_at_influence_maximization ():
     #print('seed set:', seed_set)
     
     #print('\n\n---- simulate infection ----\n\n')
-    test_seed_set = deepcopy(seed_set)
-    infected = spread_infection(test_seed_set, filename)
+    test_seed_set = set(deepcopy(seed_set))
+    no_prevention = []
+    infected = simulate_infection (test_seed_set, filename, prob_of_being_infected, no_prevention)
     #print('number of infected nodes in the simulation:', infected)
     
     #print('\n\n---- minimize infection with subtrees ----\n\n')
@@ -58,7 +59,7 @@ def adversarial_attack_at_influence_maximization ():
     attack = [subtree, centrality, random]
     mean = [subtree_mean, centrality_mean, random_mean]
     
-    return attack, mean
+    return attack, mean, len(infected)
 
 def plot_average_infection(average_infection, time):
     '''
@@ -75,7 +76,7 @@ def plot_results(time, mean, lower_bound, upper_bound, mean_overall):
     '''
     function to plot the mean, the variance, the lower bound and the upper bound of the average number of infected nodes by time
     '''
-    plt.plot(time, mean, label='Mean')
+    plt.plot(time, mean, label='Mean infected nodes', color='b')
     plt.hlines(mean_overall, xmin=time[0], xmax=time[-1], colors='r', linestyles='dashed', label='Mean overall')
     plt.fill_between(time, lower_bound, upper_bound, color='b', alpha=0.2, label='Confidence Interval')
     plt.xlabel('Epoch')
@@ -100,6 +101,20 @@ def plot_infections():
     plt.grid()
     plt.show()
 
+def plot_ratio(centrality, random, centrality_random):
+    '''
+    function to plot the ratio between the number of infected nodes of the subtree method and the other methods
+    '''
+    plt.plot(centrality, label='Subtree / Centrality')
+    plt.plot(random, label='Subtree / Random')
+    plt.plot(centrality_random, label='Centrality / Random')
+    plt.xlabel('Indipendent Replications')
+    plt.ylabel('Ratio of infected nodes')
+    plt.title('Ratio of infected nodes during different simulations')
+    plt.legend()
+    plt.grid()
+    plt.show()
+
 if __name__ == '__main__':
     """
     Args:
@@ -113,13 +128,22 @@ if __name__ == '__main__':
 
     """
     
+    ratio_subtree_centrality = list()
+    ratio_subtree_random = list()
+    ratio_centrality_random = list()
+
+    improvement_subtree = list()
+    improvement_centrality = list()
+    improvement_random = list()
+
+    first_infections = list()
 
     for i in range(times_main):
         rng = generators[i]
         
         # calculate the execution time
         starting_time = time.time()
-        selected_nodes, mean_infected = adversarial_attack_at_influence_maximization()
+        selected_nodes, mean_infected, first_infected = adversarial_attack_at_influence_maximization()
         ending_time = time.time()
 
         execution_time = ending_time - starting_time
@@ -132,6 +156,18 @@ if __name__ == '__main__':
         stats.mean_subtrees.append(mean_infected[0])
         stats.mean_centrality.append(mean_infected[1])
         stats.mean_random.append(mean_infected[2])
+
+        ratio_subtree_centrality.append(mean_infected[0] / mean_infected[1])
+        ratio_subtree_random.append(mean_infected[0] / mean_infected[2])
+        ratio_centrality_random.append(mean_infected[1] / mean_infected[2])
+
+        improvement_subtree.append(mean_infected[0] / first_infected)
+        improvement_centrality.append(mean_infected[1] / first_infected)
+        improvement_random.append(mean_infected[2] / first_infected)
+
+        first_infections.append(first_infected)
+    
+    first_infected_mean = np.mean(first_infections)
 
     # calculate the variance
     stats.variance_random = np.var(stats.mean_random)
@@ -161,21 +197,26 @@ if __name__ == '__main__':
 
     plot_infections()
 
-    # plot the results
-    time = list(range(1, len(stats.mean_random) + 1))
-    plot_results(time, stats.mean_random, stats.random_lower_bound, stats.random_upper_bound, np.mean(stats.mean_random))
-    time = list(range(1, len(stats.mean_centrality) + 1))
-    plot_results(time, stats.mean_centrality, stats.centrality_lower_bound, stats.centrality_upper_bound, np.mean(stats.mean_centrality))
-    time = list(range(1, len(stats.mean_subtrees) + 1))
-    plot_results(time, stats.mean_subtrees, stats.subtrees_lower_bound, stats.subtrees_upper_bound, np.mean(stats.mean_subtrees))
-
     # print the average execution time
     print(f'Average execution time: {np.mean(stats.execution_times)} seconds')
 
     # print the overall mean and variance
-    print(f'Overall mean random: {np.mean(stats.mean_random)}, variance: {stats.variance_random}')
-    print(f'Overall mean centrality: {np.mean(stats.mean_centrality)}, variance: {stats.variance_centrality}')
-    print(f'Overall mean subtrees: {np.mean(stats.mean_subtrees)}, variance: {stats.variance_subtrees}')
+    print(f'Overall mean random: {np.mean(stats.mean_random)}, variance: {stats.variance_random}, std: {stats.std_random}')
+    print(f'Overall mean centrality: {np.mean(stats.mean_centrality)}, variance: {stats.variance_centrality}, std: {stats.std_centrality}')
+    print(f'Overall mean subtrees: {np.mean(stats.mean_subtrees)}, variance: {stats.variance_subtrees}, std: {stats.std_subtrees}')
+
+    print(f'Ratio of infected nodes between the simulation after the algorithm and before:')
+    print(f"First infection: {first_infected_mean}")
+    print(f"Subtree improvement: {np.mean(improvement_subtree)}, variance: {np.var(improvement_subtree)}, std: {np.std(improvement_subtree)}")
+    print(f"Centrality improvement: {np.mean(improvement_centrality)}, variance: {np.var(improvement_centrality)}, std: {np.std(improvement_centrality)}")
+    print(f"Random improvement: {np.mean(improvement_random)}, variance: {np.var(improvement_random)}, std: {np.std(improvement_random)}")
+
+    # plot the ratios
+    plot_ratio(ratio_subtree_centrality, ratio_subtree_random, ratio_centrality_random)
+    # save the image in the output folder
+    filename = filename.split('/')[-1].split('.')[0]
+    prob = str(prob_of_being_infected).replace('.', '_')
+    plt.savefig(f'output/ratio_{filename}_{times}_{times_main}_{prob}.png')
 
 
 # note riunione

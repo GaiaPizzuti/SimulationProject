@@ -89,8 +89,7 @@ def centrality_analysis(filename: str, seed_set: set, node_budget: int, selected
     # dictionary that contains the number of times that compare in the centrality algorithm
     nodes_centrality = defaultdict(int)
 
-
-    simulate_infection (seed_set, filename, prob, nodes=nodes_centrality)
+    first_simulation = simulate_infection (seed_set, filename, prob, nodes=nodes_centrality)
 
     """ # simulation and selection of the nodes with the subtree algorithm
     for _ in range (times):
