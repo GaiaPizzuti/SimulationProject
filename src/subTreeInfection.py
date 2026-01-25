@@ -3,11 +3,9 @@ file that define the subtrees_methods and all the functions used in it
 '''
 
 from collections import defaultdict
-import random
 from operator import itemgetter
 from infectionSimulation import simulate_infection, infect_static_graph
 from igraph import Graph
-from numpy.random import Generator, PCG64, SeedSequence
 
 from settings import *
 from statistics import stats # type: ignore

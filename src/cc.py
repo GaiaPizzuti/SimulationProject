@@ -1,7 +1,3 @@
-'''
-file that define the cc function in order to control the number of cc contained in a graph before removing the attack set and after
-removing it
-'''
 from collections import defaultdict
 
 

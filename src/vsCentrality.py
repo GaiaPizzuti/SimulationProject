@@ -4,7 +4,6 @@ from collections import defaultdict
 from operator import itemgetter
 from typing import Set, List, Dict
 from infectionSimulation import simulate_infection
-from numpy.random import Generator, PCG64, SeedSequence
 
 from settings import *
 from statistics import stats # type: ignore

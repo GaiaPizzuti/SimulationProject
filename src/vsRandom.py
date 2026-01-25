@@ -4,7 +4,6 @@ import random
 from typing import Set
 from infectionSimulation import simulate_infection
 from subTreeInfection import subtrees_methods
-from numpy.random import Generator, PCG64, SeedSequence
 
 from settings import *
 from statistics import stats # type: ignore
