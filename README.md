@@ -31,6 +31,8 @@ The following algorithms have been implemented and evaluated:
 4 - Run the project ```python main.py```
 
 ## Project Structure
+
+```
 .
 ├── data/
 ├── output/
@@ -53,3 +55,5 @@ The following algorithms have been implemented and evaluated:
 ├── representTemporalGraphs.py
 ├── run_batches.py
 └── README.md
+
+```
