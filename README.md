@@ -7,16 +7,24 @@ This project aims to compare different mitigation strategies and understand how 
 
 ## Algorithms Evaluated
 The following algorithms have been implemented and evaluated:
-1 - Random nodes selection: nodes for the attack set are randomly selected
-2 - Centrality nodes selection: nodes for the attack set are selected based on the number of connections they have
-3 - Subtree nodes selection: nodes for the attack set are selected based on their infection subtree's dimension
+
+- Random nodes selection: nodes for the attack set are randomly selected
+
+- Centrality nodes selection: nodes for the attack set are selected based on the number of connections they have
+
+- Subtree nodes selection: nodes for the attack set are selected based on their infection subtree's dimension
 
 ## Features
-1 - Simulation of the virus spread
-2 - Implementation of the three algorithms
-3 - Simulation of the virus spread after the algorithms' action
-4 - Algorithms' evaluation
-5 - Simulation of algorithms' performance
+- Simulation of the virus spread
+
+- Implementation of the three algorithms
+
+- Simulation of the virus spread after the algorithms' action
+
+- Algorithms' evaluation
+
+- Simulation of algorithms' performance
+
 
 ## Requirments
 - Python 3.9
@@ -25,11 +33,13 @@ The following algorithms have been implemented and evaluated:
 - igraph
 
 ## Installation
-1 - Clone the repositories ```bash https://github.com/GaiaPizzuti/SimulationProject.git ``` 
-2 - Navigate the repository ```cd SimulationProject```
-3 - Install the dependences ```pip install -r requirements.txt```
-4 - Run the project ```python main.py```
-    Optionally, run ```main.py [DATASET] [DATASET_SEEDSET_BUDGET]
+1. Clone the repositories ```bash https://github.com/GaiaPizzuti/SimulationProject.git ``` 
+
+2. Navigate the repository ```cd SimulationProject```
+
+3. Install the dependences ```pip install -r requirements.txt```
+
+4. Run the project ```python main.py [DATASET_PATH] [DATASET_SEEDSET_BUDGET]```
 
 ## Project Structure
 
