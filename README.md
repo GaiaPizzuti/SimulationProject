@@ -72,4 +72,5 @@ entropy = 0x87351080e25cb0fad77a44a3be03b491  //entropy for NumPy's PCG64 BitGen
 
 ## Output
 The program will output in the stream text results. A plot will be saved in the output folder, detailing the experiment's settings. An example is showcased below.
+
 <img width="640" height="480" alt="plot_fb-forum_nodebudget80_timesmain10_times10" src="https://github.com/user-attachments/assets/fbe0a006-d268-420a-b83b-174d402d5405" />
