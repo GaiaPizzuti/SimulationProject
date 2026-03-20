@@ -1,21 +1,21 @@
 # AttackOnTemporalNetwork
 
-The project analyze the performances of three algorithm designed to attack an adversarial influence maximization algorithms on both static and temporal networks.
+This project analyzes the performances of three algorithms designed to attack an adversarial influence maximization algorithm on both static and temporal networks.
 
-The spread of viruses (or information, rumors, or malware) in networks is a critical problem in epidemiology, cybersecurity, and social network analysis.  
+The spread of viruses (or information, rumors, and malware) in networks is a critical problem in epidemiology, cybersecurity, and social network analysis.  
 This project aims to compare different mitigation strategies and understand how algorithmic choices impact the containment of a virus within a network.
 
 ## Algorithms Evaluated
 The following algorithms have been implemented and evaluated:
-1 - Random nodes selection: nodes are randomly selected
-2 - Centrality nodes selection: nodes are selected based on the number of connections they have
-3 - Subtree nodes selection: nodes are selected based on their subtree's dimension
+1 - Random nodes selection: nodes for the attack set are randomly selected
+2 - Centrality nodes selection: nodes for the attack set are selected based on the number of connections they have
+3 - Subtree nodes selection: nodes for the attack set are selected based on their infection subtree's dimension
 
 ## Features
 1 - Simulation of the virus spread
 2 - Implementation of the three algorithms
 3 - Simulation of the virus spread after the algorithms' action
-4 - Algorithms evaluation
+4 - Algorithms' evaluation
 5 - Simulation of algorithms' performance
 
 ## Requirments
@@ -29,6 +29,7 @@ The following algorithms have been implemented and evaluated:
 2 - Navigate the repository ```cd SimulationProject```
 3 - Install the dependences ```pip install -r requirements.txt```
 4 - Run the project ```python main.py```
+    Optionally, run ```main.py [DATASET] [DATASET_SEEDSET_BUDGET]
 
 ## Project Structure
 
@@ -57,3 +58,18 @@ The following algorithms have been implemented and evaluated:
 └── README.md
 
 ```
+
+## Experiment Settings
+Settings can be found under src/settings.py and can be modified to observe different results. The variables are the following:
+```
+prob_of_being_infected = 0.8                  //probability of infection            
+times_main = 10                               //times the whole experiment is run
+times = 10                                    //times each infection simulation (no attack set, algorithm, graph minus attack set) is run
+
+# High quality initial entropy
+entropy = 0x87351080e25cb0fad77a44a3be03b491  //entropy for NumPy's PCG64 BitGenerator
+```
+
+## Output
+The program will output in the stream text results. A plot will be saved in the output folder, detailing the experiment's settings. An example is showcased below.
+<img width="640" height="480" alt="plot_fb-forum_nodebudget80_timesmain10_times10" src="https://github.com/user-attachments/assets/fbe0a006-d268-420a-b83b-174d402d5405" />
