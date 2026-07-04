@@ -16,8 +16,8 @@ def compute_independent_replications_estimators(sample_means_array):
     '''Computes the simulation estimators given the sample means.'''
     grand_mean = 0
     variance = 0
-    lower_bound = []
-    upper_bound = []
+    lower_bound = 0
+    upper_bound = 0
 
     LENGTH = len(sample_means_array)
     grand_mean = np.mean(sample_means_array)
@@ -30,12 +30,8 @@ def compute_independent_replications_estimators(sample_means_array):
     variance = variance_curr
     t_student = t.ppf(1 - (1 - CONFIDENCE_INTERVAL) / 2, df=LENGTH - 1)
 
-    for _ in range(len(sample_means_array)):
-        lb0 = grand_mean - t_student * np.sqrt(variance/LENGTH)
-        ub0 = grand_mean + t_student * np.sqrt(variance/LENGTH)
-
-        lower_bound.append(lb0)
-        upper_bound.append(ub0)
+    lower_bound = grand_mean - t_student * np.sqrt(variance/LENGTH)
+    upper_bound = grand_mean + t_student * np.sqrt(variance/LENGTH)
 
     return grand_mean, variance, lower_bound, upper_bound
 
@@ -49,20 +45,20 @@ class Statistics:
         self.subtrees_sample_means_array = []
         self.subtrees_grand_mean = 0
         self.subtrees_variance = 0
-        self.subtrees_lower_bound = []
-        self.subtrees_upper_bound = []
+        self.subtrees_lower_bound = 0
+        self.subtrees_upper_bound = 0
    
         self.centrality_sample_means_array = []
         self.centrality_grand_mean = 0
         self.centrality_variance = 0
-        self.centrality_lower_bound = []
-        self.centrality_upper_bound = []
+        self.centrality_lower_bound = 0
+        self.centrality_upper_bound = 0
  
         self.random_sample_means_array = []
         self.random_grand_mean = 0     
         self.random_variance = 0
-        self.random_lower_bound = []
-        self.random_upper_bound = []
+        self.random_lower_bound = 0
+        self.random_upper_bound = 0
 
         self.naive_grand_mean = 0
 
@@ -89,15 +85,5 @@ class Statistics:
         self.improvement_centrality = [self.centrality_sample_means_array[i] / self.naive_sample_means_array[i] for i in range(len(self.centrality_sample_means_array))]
         self.improvement_random = [self.random_sample_means_array[i] / self.naive_sample_means_array[i] for i in range(len(self.random_sample_means_array))]
 
-def save_infected_nodes_list(self):
-    if self.simulation_type == "subtrees":
-        self.subtrees_infected_nodes_by_time.append(self.current_infected_nodes)
-    elif self.simulation_type == "centrality":
-        self.centrality_infected_nodes_by_time.append(self.current_infected_nodes)
-    elif self.simulation_type == "random":
-        self.random_infected_nodes_by_time.append(self.current_infected_nodes)
-    else:
-        self.naive_infected_nodes_by_time.append(self.current_infected_nodes)
-    self.current_infected_nodes = []
 
 stats = Statistics()
