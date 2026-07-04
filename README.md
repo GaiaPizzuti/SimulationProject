@@ -72,7 +72,7 @@ The following algorithms have been implemented and evaluated:
 ## Experiment Settings
 Settings can be found under src/settings.py and can be modified to observe different results. The variables are the following:
 ```
-DEBUG = True                                  //debug mode, True enables it, False disables it
+DEBUG = False                                 //debug mode, True enables it, False disables it
 prob_of_being_infected = 0.8                  //probability of infection            
 times_main = 10                               //times the whole experiment is run
 times_infection = 10                          //times each infection simulation (no attack set/algorithm/graph minus attack set) is run
@@ -99,4 +99,5 @@ Subtree improvement: 1.0546753246753247
 Centrality improvement: 0.8373351158645276
 Random improvement: 0.954607843137255
 ```
-<img width="1000" height="600" alt="plot_cliques_less_bridges_1_10_0_2" src="https://github.com/user-attachments/assets/2d96c466-a9c3-43ff-ae77-a988bdbeac17" />
+<img width="1000" height="600" alt="plot_cliques_less_bridges_1_10_0_2" src="https://github.com/user-attachments/assets/e17ebee6-3156-4018-aa64-b57907ddbafc" />
+
