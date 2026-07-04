@@ -14,4 +14,3 @@ lib/
 lib64
 pyvenv.cfg
 test.py
-output/
