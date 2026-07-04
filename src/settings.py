@@ -9,7 +9,7 @@
 from numpy.random import Generator, PCG64, SeedSequence
 import sys
 
-DEBUG = True
+DEBUG = False
 CONFIDENCE_INTERVAL = 0.95
 prob_of_being_infected = 0.8
 times_main = 10
