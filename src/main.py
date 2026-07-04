@@ -141,15 +141,14 @@ def plot_infections(filename):
     plt.bar(x + width, stats.random_sample_means_array, width, label='Random', yerr=(stats.random_upper_bound - stats.random_lower_bound) / 2, capsize=5)
 
     plt.xlabel('Independent Replications')
-    plt.ylabel('Total Infected Nodes')
-    plt.title('Total Infected Nodes for Each Method with Confidence Intervals')
+    plt.ylabel('Average Total Infected Nodes')
     plt.xticks(x, [f'IR {i+1}' for i in range(len(stats.subtrees_sample_means_array))])
-    plt.legend()
+    plt.legend()    
     plt.grid()
-    plt.tight_layout()
 
     filename_short = filename.split('/')[-1].split('.')[0]
     prob = str(prob_of_being_infected).replace('.', '_')
+    plt.title('Average Total Infected Nodes with Confidence Intervals, file: ' + filename_short + ', t_main: ' + str(times_main) + ', t_infection: ' + str(times_infection) + ', p: ' + str(prob_of_being_infected) )
     plt.ylim(0, filename_dict[filename_short] + 10)  # Set y-axis limit based on the number of nodes in the graph
     plt.savefig(f'output3/plot_{filename_short}_{times_infection}_{times_main}_{prob}.png')
     
