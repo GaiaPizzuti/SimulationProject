@@ -1,4 +1,4 @@
-# AttackOnTemporalNetwork
+# Simulation and Output Analysis of Adversarial Attack at Influence Maximization in Graphs
 
 This project analyzes the performances of three algorithms designed to attack an adversarial influence maximization algorithm on both static and temporal networks.
 
@@ -15,15 +15,15 @@ The following algorithms have been implemented and evaluated:
 - Subtree nodes selection: nodes for the attack set are selected based on their infection subtree's dimension
 
 ## Features
-- Simulation of the virus spread
+- Simulation of the virus spread with Influence Maximization on mind
 
-- Implementation of the three algorithms
+- Implementation of the three algorithms 
 
-- Simulation of the virus spread after the algorithms' action
+- Simulation of the virus spread after the algorithms' action, adding an attack set
 
-- Algorithms' evaluation
+- Collection on algorithms' performance
 
-- Simulation of algorithms' performance
+- Output analysis and plotting
 
 
 ## Requirments
@@ -39,7 +39,7 @@ The following algorithms have been implemented and evaluated:
 
 3. Install the dependences ```pip install -r requirements.txt```
 
-4. Run the project ```python main.py [DATASET_PATH] [DATASET_SEEDSET_BUDGET]```
+4. Run the project ```python main.py <filename> <attackset_budget> [<seedset_budget> | <times_main> <times_infection> <prob_of_being_infected>]```    
 
 ## Project Structure
 
@@ -72,9 +72,10 @@ The following algorithms have been implemented and evaluated:
 ## Experiment Settings
 Settings can be found under src/settings.py and can be modified to observe different results. The variables are the following:
 ```
+DEBUG = True                                  //debug mode, True enables it, False disables it
 prob_of_being_infected = 0.8                  //probability of infection            
 times_main = 10                               //times the whole experiment is run
-times = 10                                    //times each infection simulation (no attack set, algorithm, graph minus attack set) is run
+times_infection = 10                          //times each infection simulation (no attack set/algorithm/graph minus attack set) is run
 
 # High quality initial entropy
 entropy = 0x87351080e25cb0fad77a44a3be03b491  //entropy for NumPy's PCG64 BitGenerator
@@ -82,5 +83,20 @@ entropy = 0x87351080e25cb0fad77a44a3be03b491  //entropy for NumPy's PCG64 BitGen
 
 ## Output
 The program will output in the stream text results. A plot will be saved in the output folder, detailing the experiment's settings. An example is showcased below.
+```
+running python src/main.py data/cliques_less_bridges.txt 5 10 1 0.2:
 
-<img width="640" height="480" alt="plot_fb-forum_nodebudget80_timesmain10_times10" src="https://github.com/user-attachments/assets/fbe0a006-d268-420a-b83b-174d402d5405" />
+--------------- Influence Spread statistics with the different methods ---------------
+subtrees mean, variance, lower bound and upper bound:
+19.6 64.26666666666667 13.865234530577657 25.334765469422344
+centrality mean, variance, lower bound and upper bound:
+13.2 30.62222222222221 9.241404505359395 17.158595494640604
+random mean, variance, lower bound and upper bound:
+16.2 60.17777777777776 10.650666222217641 21.749333777782358
+
+---- Improvement in graph resistance with the different methods (lower is better) ----
+Subtree improvement: 1.0546753246753247
+Centrality improvement: 0.8373351158645276
+Random improvement: 0.954607843137255
+```
+<img width="1000" height="600" alt="plot_cliques_less_bridges_1_10_0_2" src="https://github.com/user-attachments/assets/2d96c466-a9c3-43ff-ae77-a988bdbeac17" />
