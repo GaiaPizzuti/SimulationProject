@@ -150,7 +150,8 @@ def plot_infections(filename):
     prob = str(prob_of_being_infected).replace('.', '_')
     plt.title('Average Total Infected Nodes with Confidence Intervals, file: ' + filename_short + ', t_main: ' + str(times_main) + ', t_infection: ' + str(times_infection) + ', p: ' + str(prob_of_being_infected) )
     plt.ylim(0, filename_dict[filename_short] + 10)  # Set y-axis limit based on the number of nodes in the graph
-    plt.savefig(f'output3/plot_{filename_short}_{times_infection}_{times_main}_{prob}.png')
+    plt.savefig(f'output/plot_{filename_short}_{times_infection}_{times_main}_{prob}.png')
+    print(f'Plot saved as output/plot_{filename_short}_{times_infection}_{times_main}_{prob}.png')
     
 
 def plot_ratio(centrality, random, centrality_random):
