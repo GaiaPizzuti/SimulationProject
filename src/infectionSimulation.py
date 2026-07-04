@@ -8,9 +8,6 @@ from settings import *
 FILE_ALREADY_OPENED = False
 file = None
 
-#dictionary to associate each filtered edge set with its graph
-filtered_graphs = {}
-
 def infect_temporal_graph(infected : "set[int]", messages : "dict[int, list[int]]", last_unixts : int, split_char : str, file, prob: float, removed_nodes=[], nodes_centrality=defaultdict(int), nodes_random=set()):
     '''
     Function to simulate the spread of an infection in a temporal graph
