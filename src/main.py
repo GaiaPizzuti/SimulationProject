@@ -6,65 +6,94 @@ from temporalGraph import influence_maximization, get_random_seed_set
 from subTreeInfection import subtrees_methods, simulate_infection
 from vsCentrality import centrality_analysis
 from vsRandom import random_analysis
+from infectionSimulation import simulate_infection, FILE_ALREADY_OPENED
 from numpy.random import Generator, PCG64, SeedSequence
-from settings import prob_of_being_infected, times_main, times, generators, rng, entropy
-from statistics import stats # type: ignore
+from settings import DEBUG, prob_of_being_infected, times_main, times_infection, generators, rng, entropy
+from statistics import stats
 import matplotlib.pyplot as plt
 import time
+from collections import defaultdict
 
-filename = sys.argv[1]
-node_budget = int(sys.argv[2])
-
-def adversarial_attack_at_influence_maximization ():
+def validate_input_parameters():
     '''
-    main function
+    function to validate the input parameters from the command line arguments
     
-    it is needed to call this function with:
-        - argv[1]: the name of the relative file's path containing the graph to analyze (e.g. data/email.txt)
+    output:
+        - filename: the name of the relative file's path containing the graph to analyze
+        - attackset_budget: the number of nodes to select for the adversarial attack
+        - seedset_budget: the number of nodes to select for the seed set (if None, the seed set will be selected using the influence maximization algorithm)
     '''
-    
-    #print('---- find seed set ----\n\n')
-    
-    if len(sys.argv) == 4:
+    if(DEBUG): print('\n---- validating input parameters ----')
+    if len(sys.argv) == 3:
+        filename = sys.argv[1]
+        attackset_budget = int(sys.argv[2])
+        seedset_budget = None
+    elif len(sys.argv) == 4:
+        filename = sys.argv[1]
+        attackset_budget = int(sys.argv[2])
         seedset_budget = int(sys.argv[3])
-        seed_set = get_random_seed_set(filename, seedset_budget)
-    elif len(sys.argv) == 3:
-        seed_set = influence_maximization(filename)
-    elif len(sys.argv) == 5:
-        seed_set = influence_maximization(filename)
+    elif len(sys.argv) == 6:
+        filename = sys.argv[1]
+        attackset_budget = int(sys.argv[2])
+        seedset_budget = None
     else:
-        print("Usage: python main.py <filename> <node_budget> [<seedset_budget> | <times_main> <times>]")
+        print("Usage: python main.py <filename> <attackset_budget> [<seedset_budget> | <times_main> <times_infection> <prob_of_being_infected>]")
         sys.exit(1)
-    
-    #print('seed set:', seed_set)
-    
-    #print('\n\n---- simulate infection ----\n\n')
-    test_seed_set = set(deepcopy(seed_set))
-    no_prevention = []
-    infected = simulate_infection (test_seed_set, filename, prob_of_being_infected, no_prevention)
-    #print('number of infected nodes in the simulation:', infected)
-    
-    #print('\n\n---- minimize infection with subtrees ----\n\n')
-    
-    #stats.simulation_type = "subtrees"
-    subtree, subtree_mean = subtrees_methods(filename, set(seed_set), node_budget, prob_of_being_infected) # type: ignore
-    
-    #stats.simulation_type = "centrality"
-    centrality, centrality_mean = centrality_analysis(filename, set(seed_set), node_budget, set(subtree), prob_of_being_infected) # type: ignore
+    return filename, attackset_budget, seedset_budget
 
-    #stats.simulation_type = "random"
-    random, random_mean = random_analysis(filename, set(seed_set), node_budget, prob_of_being_infected, set(subtree))
+def get_seed_set(filename, seedset_budget):
+    '''
+    function to get the seed set from the influence maximization algorithm or from a random selection of nodes if the seedset_budget is not None
 
-    #result_comparison(filename, set(seed_set), node_budget, set(subtree), set(centrality), set(random), prob_of_being_infected)
-    
-    #degree_nodes(filename, subtree, centrality)
-    
-    #compare_cc(filename, subtree, centrality)
+    output:
+        - seed_set: the set of nodes to use as seed set for the infection simulation
+    '''
+    if(DEBUG): print('\n---- getting seed set ----')
+    if seedset_budget is not None and seedset_budget > 0:
+        seed_set = get_random_seed_set(filename, seedset_budget)
+    else:
+        seed_set = influence_maximization(filename)
+    if(DEBUG): print('Chosen seed set:', seed_set)
 
-    attack = [subtree, centrality, random]
-    mean = [subtree_mean, centrality_mean, random_mean]
+    return seed_set
+
+def adversarial_attack_at_influence_maximization(attackset_budget, seed_set):
+    '''
+    function to perform adversarial attack
+
+    input:
+        - attackset_budget: the number of nodes to select for the adversarial attack
+        - seed_set: the set of nodes to use as seed set for the infection simulation
+    output:
+        - attack_sets: a list of the three different attack sets (subtree, centrality, random)
+        - means: a list of the three different means of infected nodes (subtree, centrality, random)
+        - len(infected): the number of infected nodes in the simulation without any adversarial attack
+    '''
     
-    return attack, mean, len(infected)
+    # simulate the infection without attack set, then with the three different methods to get the number of infected nodes
+    if(DEBUG): print('\n---- simulating infection without attack set ----')
+    naive_total_infected_nodes = list()
+    # when we simulate the first infection without attack set, save information needed for the centrality and random methods 
+    nodes_centrality = defaultdict(int)
+    nodes_random = set()
+    for _ in range(times_infection):
+        first_simulation = simulate_infection(seed_set, filename, prob_of_being_infected, removed_nodes=[], nodes_centrality=nodes_centrality, nodes_random=nodes_random)
+        naive_total_infected_nodes.append(len(first_simulation))
+    if(DEBUG): print(f"list of total infected nodes, no attack set employed: {naive_total_infected_nodes}")
+
+    if(DEBUG): print('\n---- minimizing infection with Baseline Method ----')
+    subtrees_total_infected_nodes = subtrees_methods(filename, set(seed_set), attackset_budget, prob_of_being_infected)
+    
+    if(DEBUG): print('\n---- minimizing infection with Centrality Method ----')
+    centrality_total_infected_nodes = centrality_analysis(filename, set(seed_set), attackset_budget, prob_of_being_infected, nodes_centrality=nodes_centrality)
+
+    if(DEBUG): print('\n---- minimizing infection with Random Method ----')
+    random_total_infected_nodes = random_analysis(filename, set(seed_set), attackset_budget, prob_of_being_infected, nodes_random=nodes_random)
+
+    stats.naive_total_infected_nodes.append(naive_total_infected_nodes)
+    stats.subtrees_total_infected_nodes.append(subtrees_total_infected_nodes)
+    stats.centrality_total_infected_nodes.append(centrality_total_infected_nodes)
+    stats.random_total_infected_nodes.append(random_total_infected_nodes)
 
 def plot_average_infection(average_infection, time):
     '''
@@ -122,125 +151,42 @@ def plot_ratio(centrality, random, centrality_random):
 
 if __name__ == '__main__':
     """
-    Args:
-        - filename: the name of the relative file's path containing the graph to analyze
-        - node_budget: the number of nodes to select
-    
-    settings.py:
-            - prob_of_being_infected: the probability of being infected
-            - method: the method to use for the simulation
-            - times: the number of times to loop the simulation
-
+    main function. handles input, executes AAIM and handles output 
     """
 
-    ratio_subtree_centrality = list()
-    ratio_subtree_random = list()
-    ratio_centrality_random = list()
+    filename, attackset_budget, seedset_budget = validate_input_parameters()
 
-    improvement_subtree = list()
-    improvement_centrality = list()
-    improvement_random = list()
+    seed_set = get_seed_set(filename, seedset_budget)
 
     first_infections = list()
 
     for i in range(times_main):
+        if(DEBUG): print(f'\n---- starting Repetition {i+1}/{times_main} ----')
         rng = generators[i]
-        
-        # calculate the execution time
-        starting_time = time.time()
-        selected_nodes, mean_infected, first_infected = adversarial_attack_at_influence_maximization()
-        ending_time = time.time()
+        adversarial_attack_at_influence_maximization(attackset_budget, seed_set)
 
-        execution_time = ending_time - starting_time
-        stats.execution_times.append(execution_time)
 
-        stats.subtrees_attack_set.append(selected_nodes[0])
-        stats.centrality_attack_set.append(selected_nodes[1])
-        stats.random_attack_set.append(selected_nodes[2])
-    
-        stats.mean_subtrees.append(mean_infected[0])
-        stats.mean_centrality.append(mean_infected[1])
-        stats.mean_random.append(mean_infected[2])
+    stats.output_analysis()
 
-        ratio_subtree_centrality.append(mean_infected[0] / mean_infected[1])
-        ratio_subtree_random.append(mean_infected[0] / mean_infected[2])
-        ratio_centrality_random.append(mean_infected[1] / mean_infected[2])
-
-        improvement_subtree.append(mean_infected[0] / first_infected)
-        improvement_centrality.append(mean_infected[1] / first_infected)
-        improvement_random.append(mean_infected[2] / first_infected)
-
-        first_infections.append(first_infected)
-    
-    first_infected_mean = np.mean(first_infections)
-
-    # calculate the variance
-    stats.variance_random = np.var(stats.mean_random)
-    stats.variance_centrality = np.var(stats.mean_centrality)
-    stats.variance_subtrees = np.var(stats.mean_subtrees)
-
-    # calculate the standard deviation
-    stats.std_random = np.std(stats.mean_random)
-    stats.std_centrality = np.std(stats.mean_centrality)
-    stats.std_subtrees = np.std(stats.mean_subtrees)
-
-    #stats.compute_statistics()
-    stats.compute_average_infected_nodes_output_analysis()
-
+    print(f'\n--------------- Influence Spread statistics with the different methods ---------------')
     print('subtrees mean, variance, lower bound and upper bound:')
-    print(stats.subtrees_mean[0], stats.subtrees_variance[0], stats.subtrees_lower_bound[0], stats.subtrees_upper_bound[0])
+    print(stats.subtrees_grand_mean, stats.subtrees_variance, stats.subtrees_lower_bound[0], stats.subtrees_upper_bound[0])
 
     print('centrality mean, variance, lower bound and upper bound:')
-    print(stats.centrality_mean[0], stats.centrality_variance[0], stats.centrality_lower_bound[0], stats.centrality_upper_bound[0])
+    print(stats.centrality_grand_mean, stats.centrality_variance, stats.centrality_lower_bound[0], stats.centrality_upper_bound[0])
 
     print('random mean, variance, lower bound and upper bound:')
-    print(stats.random_mean[0], stats.random_variance[0], stats.random_lower_bound[0], stats.random_upper_bound[0])
+    print(stats.random_grand_mean, stats.random_variance, stats.random_lower_bound[0], stats.random_upper_bound[0])
 
-    print('subtrees attack set:')
-    print(stats.subtrees_attack_set)
+    #plot_infections()
 
-    print('centrality attack set:')
-    print(stats.centrality_attack_set)
+    print(f'\n---- Improvement in graph resistance with the different methods (lower is better) ----')
+    print(f"Subtree improvement: {np.mean(stats.improvement_subtree)}")
+    print(f"Centrality improvement: {np.mean(stats.improvement_centrality)}")
+    print(f"Random improvement: {np.mean(stats.improvement_random)}")
 
-    print('random attack set:')
-    print(stats.random_attack_set)
-
-    #plot_average_infection(stats.subtree_ratio_list, range(len(stats.subtree_ratio_list)))
-    #plot_results(range(len(stats.subtree_ratio_list)), stats.subtrees_mean, stats.subtrees_lower_bound, stats.subtrees_upper_bound)
-    
-    #plot_average_infection(stats.centrality_average_infected, range(len(stats.centrality_average_infected)))
-    #plot_results(range(len(stats.centrality_average_infected)), stats.centrality_average_infected, stats.centrality_lower_bound, stats.centrality_upper_bound)
-
-    #plot_average_infection(stats.random_average_infected, range(len(stats.random_average_infected)))
-    #plot_results(range(len(stats.random_average_infected)), stats.random_average_infected, stats.random_lower_bound, stats.random_upper_bound)
-
-    plot_infections()
-
-    # print the average execution time
-    print(f'Average execution time: {np.mean(stats.execution_times)} seconds')
-
-    # print the overall mean and variance
-    print(f'Overall mean random: {np.mean(stats.mean_random)}, variance: {stats.variance_random}, std: {stats.std_random}')
-    print(f'Overall mean centrality: {np.mean(stats.mean_centrality)}, variance: {stats.variance_centrality}, std: {stats.std_centrality}')
-    print(f'Overall mean subtrees: {np.mean(stats.mean_subtrees)}, variance: {stats.variance_subtrees}, std: {stats.std_subtrees}')
-
-    print(f'Ratio of infected nodes between the simulation after the algorithm and before:')
-    print(f"First infection: {first_infected_mean}")
-    print(f"Subtree improvement: {np.mean(improvement_subtree)}, variance: {np.var(improvement_subtree)}, std: {np.std(improvement_subtree)}")
-    print(f"Centrality improvement: {np.mean(improvement_centrality)}, variance: {np.var(improvement_centrality)}, std: {np.std(improvement_centrality)}")
-    print(f"Random improvement: {np.mean(improvement_random)}, variance: {np.var(improvement_random)}, std: {np.std(improvement_random)}")
-
-    # plot the ratios
-    plot_ratio(ratio_subtree_centrality, ratio_subtree_random, ratio_centrality_random)
     # save the image in the output folder
     filename = filename.split('/')[-1].split('.')[0]
     prob = str(prob_of_being_infected).replace('.', '_')
-    plt.savefig(f'output/ratio_{filename}_{times}_{times_main}_{prob}.png')
+    plt.savefig(f'output3/ratio_{filename}_{times_infection}_{times_main}_{prob}.png')
 
-
-# note riunione
-# per fare i confidence interval runnare x volte il main e salvare i risultati
-# poi fare la media e varianza dei risultati
-# salvare il numero di nodi finali infetti, numero di epoch totali, tempo di esecuzione
-# fare un plot con la media e i confidence interval
-# - cambiare il numero di rng per ogni algoritmo
