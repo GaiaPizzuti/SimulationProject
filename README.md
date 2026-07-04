@@ -31,15 +31,20 @@ The following algorithms have been implemented and evaluated:
 - numpy
 - matplotlib
 - igraph
+- scipy
 
 ## Installation
 1. Clone the repositories ```bash https://github.com/GaiaPizzuti/SimulationProject.git ``` 
 
 2. Navigate the repository ```cd SimulationProject```
 
-3. Install the dependences ```pip install -r requirements.txt```
+3. (Recommended) Create a virtual environment ```python3 -m venv .venv```
 
-4. Run the project ```python main.py <filename> <attackset_budget> [<seedset_budget> | <times_main> <times_infection> <prob_of_being_infected>]```    
+4. (Recommended) Activate the virtual environment ```source .venv/bin/activate```
+
+5. Install the dependences ```pip install -r utils/requirements.txt```
+
+6. Run the project ```python main.py <filename> <attackset_budget> [<seedset_budget> | <times_main> <times_infection> <prob_of_being_infected>]```    
 
 ## Project Structure
 
@@ -49,11 +54,8 @@ The following algorithms have been implemented and evaluated:
 ├── output/
 ├── src/
 │   ├── cc.py
-│   ├── comparison.py
-│   ├── degreeNodes.py
 │   └── inferctionSimulation.py
 │   └── main.py
-│   └── plot.py
 │   └── settings.py
 │   └── statistics.py
 │   └── subTreeInfection.py
@@ -62,8 +64,9 @@ The following algorithms have been implemented and evaluated:
 │   └── vsRandom.py
 ├── utils/
 │   ├── convert.py
-│   └── generate.py
-├── representTemporalGraphs.py
+│   ├── generate.py
+│   └── requirements.txt
+├── .gitignore
 ├── run_batches.py
 └── README.md
 
