@@ -15,6 +15,16 @@ prob_of_being_infected = 0.8
 times_main = 10
 times_infection = 10
 
+filename_dict = {
+    "as19971108-new": 3015,
+    "cit-HepPh-pruned-new": 172,
+    "cliques_less_bridges": 43,
+    "CollegeMsg": 1899,
+    "email-Eu-core-temporal-Dept2": 171,
+    "fb-forum": 899,
+    "ring": 499,
+}
+
 # create the generators given a starting entropy
 entropy = 0x87351080e25cb0fad77a44a3be03b491
 base_seq = SeedSequence(entropy)
