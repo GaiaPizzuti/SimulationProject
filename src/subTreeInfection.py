@@ -1,7 +1,3 @@
-'''
-file that define the subtrees_methods and all the functions used in it
-'''
-
 from collections import defaultdict
 from operator import itemgetter
 from infectionSimulation import simulate_infection, infect_static_graph
@@ -10,6 +6,9 @@ from igraph import Graph
 from settings import *
 from statistics import stats # type: ignore
 
+
+FILE_ALREADY_OPENED_SUBTREE = False
+file_subtree = None
 
 # ------------------------- class Node -------------------------
 
@@ -32,17 +31,6 @@ class Node:
 
     def __repr__(self):
         return f"{self.id}, {self.timestamp}"
-    
-# ------------------------ print tree ------------------------
-
-def print_tree(tree, spaces=0):
-    ''''
-    Function that prints the tree as an horizontal tree
-    if spaces are passed in input, the tree will be printed with the number of spaces passed in input
-    '''
-    print(" " * spaces, tree)
-    for child in tree.children:
-        print_tree(child, spaces+1)
 
 
 # ------------------------- forward forest -------------------------
@@ -103,9 +91,10 @@ def create_forest_static_graph(infected : set[int], split_char : str, file, prob
 
 def forward_forest (seed_set : set, filename : str, prob):
     '''
-    Simulation of the infection to find the forest of the infection
-    input: seed_set is the set of original infected nodes, filename is the name of the file containing the graph
-    output: the forest of the infection
+    Simulation of the infection to find the forest of the infection. 
+    Given that the datasets can be either temporal or static, we need to bypass infectionSimulation's simulate_infection function to return the forest of the infection.
+    input: seed_set is the set of original infected nodes, filename is the name of the file containing the graph, prob is the probability of being infected
+    output: the forest of the infection (note. different return from simulate_infection) and a boolean indicating if the graph is static or temporal
     '''
 
     # final forest of the infection
@@ -120,11 +109,16 @@ def forward_forest (seed_set : set, filename : str, prob):
     if filename == 'data/fb-forum.txt':
         split_char = ','
 
-    file = [row for row in open(filename, "r")]
+    global FILE_ALREADY_OPENED_SUBTREE, file_subtree
+    if not FILE_ALREADY_OPENED_SUBTREE:
+        file_subtree = [row for row in open(filename, "r")]
+        FILE_ALREADY_OPENED_SUBTREE = True
+    file = file_subtree
+
     if int(file[0].split(split_char)[2]) == -1:
         return create_forest_static_graph(infected, split_char, file, prob), True
     else:
-        return create_forest_temporal_graph(seed_set, infected, messages, forest, last_unixts, split_char, file, prob), False # type: ignore
+        return create_forest_temporal_graph(seed_set, infected, messages, forest, last_unixts, split_char, file, prob), False
     
     
 
@@ -136,7 +130,6 @@ def update_infection_tree(messages : dict[int, list[tuple[int, int]]], infected 
         - infected is the set of infected nodes
         - forest is the forest of the infection
         - unixts is the unixts of the last message
-        - prob is the probability of being
     '''
 
     for dst, data in messages.items():
@@ -150,13 +143,6 @@ def update_infection_tree(messages : dict[int, list[tuple[int, int]]], infected 
                         add_infected_edges (new_node, forest, src)
                         infected.add(dst)
                     break
-            """
-            previously version in which we used to choose a random message and check if it was infected or not
-            src, state = random.choice(data)
-            if state == 1:
-                new_node = Node(dst, unixts)
-                add_infected_edges (new_node, forest, src)
-                infected.add(dst) """
     messages.clear()
 
 def add_infected_edges(new_node : Node, forest : list[Node], src: int):
@@ -188,13 +174,11 @@ def count_subtree_size_rec (tree: Node):
 def choose_nodes (forest: list[Node], seed_set: set[int], budget: int) -> set[int]:
     '''
     function that chooses k nodes from the forest
-    input: forest is the forest of the infection, seed_set is the set of initial infected nodes, k is the number of nodes to choose
+    input: forest is the forest of the infection, seed_set is the set of initial infected nodes, 'budget' is the number of nodes to choose
     output: the set of nodes chosen
     '''
-
     # count the size of the subtree of each node
     count_subtree_size(forest)
-
 
     # choose k nodes from the nodes with the highest subtree size
     set_chosen_nodes = set()
@@ -208,6 +192,7 @@ def choose_nodes (forest: list[Node], seed_set: set[int], budget: int) -> set[in
     return set_chosen_nodes
 
 def choose_nodes_rec (tree: Node, seed_set: set[int], max_subtree: int, node : int, set_chosen_nodes: set[int]):
+    '''recursive function that chooses the node with the highest subtree size from the forest'''
     if tree.subtree_size > max_subtree and tree.id not in seed_set and tree.id not in set_chosen_nodes:
         max_subtree = tree.subtree_size
         node = tree.id
@@ -216,7 +201,7 @@ def choose_nodes_rec (tree: Node, seed_set: set[int], max_subtree: int, node : i
     return max_subtree, node
 
 def find_best_node (nodes : dict[int, int], budget : int) -> list[int]:
-
+    '''function that finds the best 'budget' nodes from the nodes with the highest subtree size. Has the same functionality of choose_nodes but it is used when the graph is static.'''
     # sort the nodes by their subtree size
     sorted_nodes = {k: v for k, v in sorted(nodes.items(), key=itemgetter(1), reverse=True)}
     return list(sorted_nodes.keys())[:budget]
@@ -224,87 +209,73 @@ def find_best_node (nodes : dict[int, int], budget : int) -> list[int]:
 
 def sample_vrr_path(forest: Graph, seed_set: set[int]):
     '''
-    function that samples a random path from the forest
-    input: forest is the forest of the infection
+    function that samples a random path from the infection forest
+    input: forest is the forest of the infection and seed set
     output: the path chosen
     '''
-    # pick random node not in seed set
+    # pick random infected node not in seed set:
+    # filter the forest to only include nodes not in the seed set
     filtered_forest = [node for node in forest.adjacency_list.keys() if node not in seed_set]
     if len(filtered_forest) == 0:
         return []
-    
+    # pick a random node from the filtered forest
     node = rng.choice(filtered_forest)
     
     # find the path from the node to the root
     path = []
     while node not in seed_set:
-        # print("Retracing path from", node)
         path.append(node)
         node = list(dict.fromkeys(forest.adjacency_list[node]))[0] 
-        # print(f"Node {node}'s adjacents: {forest.adjacency_list[node]}")
     return path
 
-def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob):
+def subtrees_methods(filename: str, seed_set: set, attackset_budget: int, prob):
     '''
-    function that finds the attack set of nodes that will be removed in order to minimize the spread of infections
-    
+    function that finds an attack set using the subtrees method and simulates the infection with the attack set
     
     input:
         - filename: string, the name of the file containing the information about the network
         - seed_set: set, set of nodes selected to maximize the spread of the influence
-        - node_budget: int, the maximum size of the attack set
+        - attackset_budget: int, the maximum size of the attack set
         - prob: float, probability of a node of being infected
         
     output:
-        - selected_nodes: list, attack set
+        - total_infected_list_subtree: list, list of the number of total infected nodes for each simulation
     '''
+    # simulate the infection to create a forward forest. Process is repeated times_infection times
     removed_nodes = defaultdict(int)
 
-    no_prevention = list()
-    
-    total_length = 0
-    for _ in range(times):
-        first_simulation = simulate_infection (seed_set, filename, prob, no_prevention)
-        total_length += len(first_simulation)
-
-    # print(f"Infected nodes first simulation:",  total_length // times)
-    
-    # initialize the list of vrr paths if the graph is static
     vrr_paths = list()
-    
-    for _ in range (times):
+    for _ in range (times_infection):
         forest, is_static = forward_forest(seed_set, filename, prob)
 
         if not is_static:
-            selected_node = choose_nodes(forest, seed_set, node_budget) # type: ignore
+            selected_node = choose_nodes(forest, seed_set, attackset_budget)
             for node in selected_node:
                 removed_nodes[node] = removed_nodes[node] + 1
         else:
-            vrr_paths.append(sample_vrr_path(forest, seed_set)) # type: ignore
+            vrr_paths.append(sample_vrr_path(forest, seed_set))
 
+    # choose the nodes using the sampled vrr paths if the graph is static, otherwise use the removed_nodes dictionary
     if not is_static:
-        selected_nodes = find_best_node(removed_nodes, node_budget)
+        selected_nodes = find_best_node(removed_nodes, attackset_budget)
     else:
-        # rank the nodes by the number of times they were selected and choose the top node_budget nodes
+        # rank the nodes by the number of times they were selected and choose the top attackset_budget nodes
         flat_vrr_paths = [node for path in vrr_paths for node in path]
-        selected_nodes = find_best_node ({node: flat_vrr_paths.count(node) for node in set(flat_vrr_paths)}, node_budget)
+        selected_nodes = find_best_node ({node: flat_vrr_paths.count(node) for node in set(flat_vrr_paths)}, attackset_budget)
         
-    #print(f"Selected nodes (Subtree method): {selected_nodes}")
-
-    prevention = list()
+    if(DEBUG): print(f"Attack set (Subtree method): {selected_nodes}")
     
-    stats.simulation_type = "subtrees"
+    # simulate the infection with the selected nodes removed
     total_infected = 0
-    for _ in range(times):
-        second_simulation = simulate_infection(seed_set, filename, prob, prevention, selected_nodes)
+    total_infected_list_subtree = []
+    for _ in range(times_infection):
+        second_simulation = simulate_infection(seed_set, filename, prob, removed_nodes=selected_nodes)
         total_infected += len(second_simulation)
-    
-    stats.simulation_type = "none"
+        total_infected_list_subtree.append(len(second_simulation))
 
-    mean_infected = total_infected // times
+    if(DEBUG): print(f"list of total infected nodes, subtree method: {total_infected_list_subtree}")
     
-    
-    return selected_nodes, mean_infected
+    return total_infected_list_subtree
 
 
 # ------------------------- Main -------------------------
@@ -313,6 +284,6 @@ if __name__ == "__main__":
     
     filename = "data/email.txt"
     seed_set = {83, 49, 60, 85}
-    node_budget = 10
+    attackset_budget = 10
     
-    subtrees_methods(filename, seed_set, node_budget, 0.4)
+    subtrees_methods(filename, seed_set, attackset_budget, 0.4)
