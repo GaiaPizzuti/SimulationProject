@@ -8,7 +8,7 @@ from vsCentrality import centrality_analysis
 from vsRandom import random_analysis
 from infectionSimulation import simulate_infection, FILE_ALREADY_OPENED
 from numpy.random import Generator, PCG64, SeedSequence
-from settings import DEBUG, prob_of_being_infected, times_main, times_infection, generators, rng, entropy
+from settings import DEBUG, prob_of_being_infected, times_main, times_infection, generators, rng, entropy, filename_dict
 from statistics import stats
 import matplotlib.pyplot as plt
 import time
@@ -38,6 +38,13 @@ def validate_input_parameters():
         seedset_budget = None
     else:
         print("Usage: python main.py <filename> <attackset_budget> [<seedset_budget> | <times_main> <times_infection> <prob_of_being_infected>]")
+        sys.exit(1)
+    # validate the input parameters
+    if attackset_budget <= 0:
+        print("Error: attackset_budget must be a positive integer.")
+        sys.exit(1)
+    if seedset_budget is not None and seedset_budget <= 0:
+        print("Error: seedset_budget must be a positive integer.")
         sys.exit(1)
     return filename, attackset_budget, seedset_budget
 
@@ -120,20 +127,32 @@ def plot_results(time, mean, lower_bound, upper_bound, mean_overall):
     plt.grid()
     plt.show()
 
-def plot_infections():
+def plot_infections(filename):
     '''
-    function to plot the number of infected nodes by time
+    function to plot the total number of infected nodes for each method (subtree, centrality, random) as a function of the number of independent replications, with the upper and lower bounds of the confidence interval as errors in a bar chart
     '''
-    plt.plot(stats.naive_infected_nodes_by_time, label='Naive')
-    plt.plot(stats.subtrees_infected_nodes_by_time, label='Subtrees')
-    plt.plot(stats.centrality_infected_nodes_by_time, label='Centrality')
-    plt.plot(stats.random_infected_nodes_by_time, label='Random')
-    plt.xlabel('Epoch')
-    plt.ylabel('Number of infected nodes')
-    plt.title('Number of infected nodes as a function of time epochs')
+    plt.figure(figsize=(10, 6))
+    
+    x = np.arange(len(stats.subtrees_sample_means_array))
+    width = 0.25
+
+    plt.bar(x - width, stats.subtrees_sample_means_array, width, label='Subtree', yerr=(stats.subtrees_upper_bound - stats.subtrees_lower_bound) / 2, capsize=5)
+    plt.bar(x, stats.centrality_sample_means_array, width, label='Centrality', yerr=(stats.centrality_upper_bound - stats.centrality_lower_bound) / 2, capsize=5)
+    plt.bar(x + width, stats.random_sample_means_array, width, label='Random', yerr=(stats.random_upper_bound - stats.random_lower_bound) / 2, capsize=5)
+
+    plt.xlabel('Independent Replications')
+    plt.ylabel('Total Infected Nodes')
+    plt.title('Total Infected Nodes for Each Method with Confidence Intervals')
+    plt.xticks(x, [f'IR {i+1}' for i in range(len(stats.subtrees_sample_means_array))])
     plt.legend()
     plt.grid()
-    plt.show()
+    plt.tight_layout()
+
+    filename_short = filename.split('/')[-1].split('.')[0]
+    prob = str(prob_of_being_infected).replace('.', '_')
+    plt.ylim(0, filename_dict[filename_short] + 10)  # Set y-axis limit based on the number of nodes in the graph
+    plt.savefig(f'output3/plot_{filename_short}_{times_infection}_{times_main}_{prob}.png')
+    
 
 def plot_ratio(centrality, random, centrality_random):
     '''
@@ -168,25 +187,18 @@ if __name__ == '__main__':
 
     stats.output_analysis()
 
+    plot_infections(filename)
+
     print(f'\n--------------- Influence Spread statistics with the different methods ---------------')
     print('subtrees mean, variance, lower bound and upper bound:')
-    print(stats.subtrees_grand_mean, stats.subtrees_variance, stats.subtrees_lower_bound[0], stats.subtrees_upper_bound[0])
-
+    print(stats.subtrees_grand_mean, stats.subtrees_variance, stats.subtrees_lower_bound, stats.subtrees_upper_bound)
     print('centrality mean, variance, lower bound and upper bound:')
-    print(stats.centrality_grand_mean, stats.centrality_variance, stats.centrality_lower_bound[0], stats.centrality_upper_bound[0])
-
+    print(stats.centrality_grand_mean, stats.centrality_variance, stats.centrality_lower_bound, stats.centrality_upper_bound)
     print('random mean, variance, lower bound and upper bound:')
-    print(stats.random_grand_mean, stats.random_variance, stats.random_lower_bound[0], stats.random_upper_bound[0])
-
-    #plot_infections()
+    print(stats.random_grand_mean, stats.random_variance, stats.random_lower_bound, stats.random_upper_bound)
 
     print(f'\n---- Improvement in graph resistance with the different methods (lower is better) ----')
     print(f"Subtree improvement: {np.mean(stats.improvement_subtree)}")
     print(f"Centrality improvement: {np.mean(stats.improvement_centrality)}")
     print(f"Random improvement: {np.mean(stats.improvement_random)}")
-
-    # save the image in the output folder
-    filename = filename.split('/')[-1].split('.')[0]
-    prob = str(prob_of_being_infected).replace('.', '_')
-    plt.savefig(f'output3/ratio_{filename}_{times_infection}_{times_main}_{prob}.png')
 
