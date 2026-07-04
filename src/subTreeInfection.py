@@ -1,14 +1,10 @@
 from collections import defaultdict
 from operator import itemgetter
-from infectionSimulation import simulate_infection, infect_static_graph
+from infectionSimulation import simulate_infection, infect_static_graph, FILE_ALREADY_OPENED, file
 from igraph import Graph
 
 from settings import *
 from statistics import stats # type: ignore
-
-
-FILE_ALREADY_OPENED_SUBTREE = False
-file_subtree = None
 
 # ------------------------- class Node -------------------------
 
@@ -109,12 +105,14 @@ def forward_forest (seed_set : set, filename : str, prob):
     if filename == 'data/fb-forum.txt':
         split_char = ','
 
-    global FILE_ALREADY_OPENED_SUBTREE, file_subtree
-    if not FILE_ALREADY_OPENED_SUBTREE:
-        file_subtree = [row for row in open(filename, "r")]
-        FILE_ALREADY_OPENED_SUBTREE = True
-    file = file_subtree
+    global FILE_ALREADY_OPENED, file
+    if not FILE_ALREADY_OPENED:
+        if(DEBUG): print(f'opening file {filename} for the first time')
+        file = [row for row in open(filename, "r")]
+        FILE_ALREADY_OPENED = True
+    file = file
 
+    
     if int(file[0].split(split_char)[2]) == -1:
         return create_forest_static_graph(infected, split_char, file, prob), True
     else:

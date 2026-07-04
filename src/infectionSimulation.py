@@ -8,6 +8,9 @@ from settings import *
 FILE_ALREADY_OPENED = False
 file = None
 
+#dictionary to associate each filtered edge set with its graph
+filtered_graphs = {}
+
 def infect_temporal_graph(infected : "set[int]", messages : "dict[int, list[int]]", last_unixts : int, split_char : str, file, prob: float, removed_nodes=[], nodes_centrality=defaultdict(int), nodes_random=set()):
     '''
     Function to simulate the spread of an infection in a temporal graph
@@ -66,14 +69,14 @@ def infect_static_graph(infected : "set[int]", split_char : str, file, prob: flo
     
     filtered_edges = [(int(src), int(dst)) for src, dst, unixts in [line.split(split_char) for line in file] if int(src) not in removed_nodes and int(dst) not in removed_nodes]
 
+    infection_tree = Forest()    
     static_graph = Graph()
-    infection_tree = Forest()
     for src, dst in filtered_edges:
         static_graph.add_edge(src, dst)
         if removed_nodes == []:
             count_degree(src, dst, nodes_centrality, infected)
             count_nodes(src, dst, nodes_random)
-                    
+    
     previous_infected = 0
     while len(infected) != previous_infected:
         previous_infected = len(infected)
@@ -85,19 +88,15 @@ def infect_static_graph(infected : "set[int]", split_char : str, file, prob: flo
                     if infection_result <= prob:
                         new_infected.add(neighbor)
                         infection_tree.add_edge(node, neighbor)
-                        # print(f"Node {neighbor} infected by {node}")
-                        # print(f"Node {neighbor}'s adjacents: {infection_tree.adjacency_list[neighbor]}")
-                        # print(f"Node {node}'s adjacents: {infection_tree.adjacency_list[node]}\n")
         infected = new_infected
     return infected, infection_tree
 
-def simulate_infection(seed_set : set, filename : str, prob: float, plot=[], removed_nodes=[], nodes_centrality=defaultdict(int), nodes_random=set()):
+def simulate_infection(seed_set : set, filename : str, prob: float, removed_nodes=[], nodes_centrality=defaultdict(int), nodes_random=set()):
     '''
     Function to simulate the spread of an infection in a temporal graph
     input:
         - seed_set: the set of original infected nodes
         - filename: the name of the file containing the graph
-        - plot: the list of the number of infected nodes at each time step
         - prob: the probability of being infected
         - removed_nodes: the set of nodes that have been removed
     output:
@@ -117,6 +116,7 @@ def simulate_infection(seed_set : set, filename : str, prob: float, plot=[], rem
 
     global FILE_ALREADY_OPENED, file
     if not FILE_ALREADY_OPENED:
+        if(DEBUG): print(f'opening file {filename} for the first time')
         file = [row for row in open(filename, "r")]
         FILE_ALREADY_OPENED = True
 
