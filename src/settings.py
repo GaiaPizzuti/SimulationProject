@@ -1,9 +1,9 @@
 from numpy.random import Generator, PCG64, SeedSequence
 import sys
 
-prob_of_being_infected = 0.3
-times_main = 5
-times = 1
+prob_of_being_infected = 0.8
+times_main = 10
+times = 10
 
 # High quality initial entropy
 entropy = 0x87351080e25cb0fad77a44a3be03b491

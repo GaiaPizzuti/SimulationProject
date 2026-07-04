@@ -3,11 +3,9 @@ file that define the subtrees_methods and all the functions used in it
 '''
 
 from collections import defaultdict
-import random
 from operator import itemgetter
 from infectionSimulation import simulate_infection, infect_static_graph
 from igraph import Graph
-from numpy.random import Generator, PCG64, SeedSequence
 
 from settings import *
 from statistics import stats # type: ignore
@@ -269,7 +267,7 @@ def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob):
         first_simulation = simulate_infection (seed_set, filename, prob, no_prevention)
         total_length += len(first_simulation)
 
-    #print(f"Infected nodes first simulation:",  total_length // times)
+    # print(f"Infected nodes first simulation:",  total_length // times)
     
     # initialize the list of vrr paths if the graph is static
     vrr_paths = list()
@@ -300,18 +298,13 @@ def subtrees_methods(filename: str, seed_set: set, node_budget: int, prob):
     for _ in range(times):
         second_simulation = simulate_infection(seed_set, filename, prob, prevention, selected_nodes)
         total_infected += len(second_simulation)
-        #print(f"Infected nodes: {len(second_simulation)}")
     
     stats.simulation_type = "none"
 
-    second_simulation = total_infected // times
-    #print(f"Infected nodes second infection: {second_simulation}")
-
-    ratio = second_simulation / len(first_simulation)
-    print(f"Ratio: {ratio}")
-    stats.subtree_ratio_list.append(ratio)
+    mean_infected = total_infected // times
     
-    return selected_nodes
+    
+    return selected_nodes, mean_infected
 
 
 # ------------------------- Main -------------------------

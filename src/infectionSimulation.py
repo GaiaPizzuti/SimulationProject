@@ -1,4 +1,3 @@
-import random
 from collections import defaultdict
 from typing import Set, List, Dict
 from cc import Graph, Forest
