@@ -1,0 +1,14 @@
+Plot saved as output/plot_email-Eu-core-temporal-Dept2_100_10_0_2.png
+
+--------------- Influence Spread statistics with the different methods ---------------
+subtrees mean, variance, lower bound and upper bound:
+107.31400000000001 0.1313377777777776 107.05475069186821 107.5732493081318
+centrality mean, variance, lower bound and upper bound:
+110.1 0.04175555555555605 109.95382270961952 110.24617729038047
+random mean, variance, lower bound and upper bound:
+115.04 6.887377777777784 113.16263063541435 116.91736936458567
+
+---- Improvement in graph resistance with the different methods (lower is better) ----
+Subtree improvement: 0.8202548316282036
+Centrality improvement: 0.841552221823882
+Random improvement: 0.8793143837898549

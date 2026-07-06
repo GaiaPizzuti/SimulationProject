@@ -1,0 +1,14 @@
+Plot saved as output/plot_CollegeMsg_100_10_0_4.png
+
+--------------- Influence Spread statistics with the different methods ---------------
+subtrees mean, variance, lower bound and upper bound:
+1340.5059999999999 2.9121155555554594 1339.2852490350374 1341.7267509649623
+centrality mean, variance, lower bound and upper bound:
+1345.3039999999999 1.887559999999989 1344.3211818754523 1346.2868181245474
+random mean, variance, lower bound and upper bound:
+1422.917 9.125578888889175 1420.7560088611074 1425.0779911388925
+
+---- Improvement in graph resistance with the different methods (lower is better) ----
+Subtree improvement: 0.9134618749369853
+Centrality improvement: 0.9167312097947026
+Random improvement: 0.9696198578255171

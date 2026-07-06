@@ -1,0 +1,14 @@
+Plot saved as output/plot_cliques_less_bridges_100_10_0_8.png
+
+--------------- Influence Spread statistics with the different methods ---------------
+subtrees mean, variance, lower bound and upper bound:
+14.0 0.0 14.0 14.0
+centrality mean, variance, lower bound and upper bound:
+36.726 0.1596488888888889 36.44017137223469 37.01182862776531
+random mean, variance, lower bound and upper bound:
+31.498 70.70072888888889 25.483012630391602 37.512987369608396
+
+---- Improvement in graph resistance with the different methods (lower is better) ----
+Subtree improvement: 0.34554065027168024
+Centrality improvement: 0.9064536777904134
+Random improvement: 0.7764133550522369

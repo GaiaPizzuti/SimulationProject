@@ -1,0 +1,14 @@
+Plot saved as output/plot_cit-HepPh-pruned-new_100_10_0_4.png
+
+--------------- Influence Spread statistics with the different methods ---------------
+subtrees mean, variance, lower bound and upper bound:
+1.0 0.0 1.0 1.0
+centrality mean, variance, lower bound and upper bound:
+7.4959999999999996 0.029448888888888882 7.373239900754629 7.61876009924537
+random mean, variance, lower bound and upper bound:
+9.384 0.6563155555555558 8.804465729302411 9.96353427069759
+
+---- Improvement in graph resistance with the different methods (lower is better) ----
+Subtree improvement: 0.09392025050066796
+Centrality improvement: 0.7039685452948429
+Random improvement: 0.8816336798277412
