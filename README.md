@@ -87,20 +87,22 @@ entropy = 0x87351080e25cb0fad77a44a3be03b491  //entropy for NumPy's PCG64 BitGen
 ## Output
 The program will output in the stream text results. A plot will be saved in the output folder, detailing the experiment's settings. An example is showcased below.
 ```
-running python src/main.py data/cliques_less_bridges.txt 5 10 1 0.2:
+running python src/main.py data/cliques_less_bridges.txt 4 10 10 0.2:
+
+Plot saved as output/plot_cliques_less_bridges_10_10_0_2.png
 
 --------------- Influence Spread statistics with the different methods ---------------
 subtrees mean, variance, lower bound and upper bound:
-19.6 64.26666666666667 13.865234530577657 25.334765469422344
+12.629999999999999 12.020111111111108 10.149855325812268 15.11014467418773
 centrality mean, variance, lower bound and upper bound:
-13.2 30.62222222222221 9.241404505359395 17.158595494640604
+17.21 15.952111111111108 14.35285779099424 20.067142209005763
 random mean, variance, lower bound and upper bound:
-16.2 60.17777777777776 10.650666222217641 21.749333777782358
+15.9 7.973333333333332 13.880040162903445 17.919959837096556
 
 ---- Improvement in graph resistance with the different methods (lower is better) ----
-Subtree improvement: 1.0546753246753247
-Centrality improvement: 0.8373351158645276
-Random improvement: 0.954607843137255
+Subtree improvement: 0.5709035239165913
+Centrality improvement: 0.8055674900442107
+Random improvement: 0.7323458431160055
 ```
-<img width="1000" height="600" alt="plot_cliques_less_bridges_1_10_0_2" src="https://github.com/user-attachments/assets/e17ebee6-3156-4018-aa64-b57907ddbafc" />
+<img width="1000" height="600" alt="plot_cliques_less_bridges_10_10_0_2" src="https://github.com/user-attachments/assets/e17ebee6-3156-4018-aa64-b57907ddbafc" />
 
