@@ -125,6 +125,7 @@ if __name__ == '__main__':
     plot_infections(filename)
 
     print(f'\n--------------- Influence Spread statistics with the different methods ---------------')
+    print('average number of infected nodes with no attack set employed:', stats.naive_grand_mean)
     print('subtrees mean, variance, lower bound and upper bound:')
     print(stats.subtrees_grand_mean, stats.subtrees_variance, stats.subtrees_lower_bound, stats.subtrees_upper_bound)
     print('centrality mean, variance, lower bound and upper bound:')
