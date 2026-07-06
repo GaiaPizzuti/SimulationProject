@@ -25,7 +25,7 @@ def compute_independent_replications_estimators(sample_means_array):
     variance_curr = 0
     for i in range(len(sample_means_array)):
         variance_curr = variance_curr + ((sample_means_array[i] - grand_mean)**2)
-    variance_curr *= 1/(len(sample_means_array) - 1)
+    variance_curr *= 1/(len(sample_means_array) - 1) if len(sample_means_array) > 1 else 0
 
     variance = variance_curr
     t_student = t.ppf(1 - (1 - CONFIDENCE_INTERVAL) / 2, df=LENGTH - 1)
