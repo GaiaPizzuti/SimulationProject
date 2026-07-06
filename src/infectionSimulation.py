@@ -51,7 +51,7 @@ def infect_temporal_graph(infected : "set[int]", messages : "dict[int, list[int]
     process_queue (messages, infected, prob)
     return infected
     
-def infect_static_graph(infected : "set[int]", split_char : str, file, prob: float, removed_nodes=[], nodes_centrality=defaultdict(int), nodes_random=set()):
+def infect_static_graph(infected : set[int], split_char : str, file, prob: float, removed_nodes=[], nodes_centrality=defaultdict(int), nodes_random=set()):
     '''
     Function to simulate the spread of an infection in a static graph
     input:
@@ -79,12 +79,13 @@ def infect_static_graph(infected : "set[int]", split_char : str, file, prob: flo
         previous_infected = len(infected)
         new_infected = deepcopy(infected)
         for node in infected:
-            for neighbor in static_graph.adjacency_list[node]:
-                if neighbor not in infected:
-                    infection_result = rng.uniform(0, 1)
-                    if infection_result <= prob:
-                        new_infected.add(neighbor)
-                        infection_tree.add_edge(node, neighbor)
+            if node in static_graph.adjacency_list:            
+                for neighbor in static_graph.adjacency_list[node]:
+                    if neighbor not in infected:
+                        infection_result = rng.uniform(0, 1)
+                        if infection_result <= prob:
+                            new_infected.add(neighbor)
+                            infection_tree.add_edge(node, neighbor)
         infected = new_infected
     return infected, infection_tree
 
