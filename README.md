@@ -104,5 +104,6 @@ Subtree improvement: 0.5709035239165913
 Centrality improvement: 0.8055674900442107
 Random improvement: 0.7323458431160055
 ```
-<img width="1000" height="600" alt="plot_cliques_less_bridges_10_10_0_2" src="https://github.com/user-attachments/assets/e17ebee6-3156-4018-aa64-b57907ddbafc" />
+<img width="1000" height="600" alt="plot_cliques_less_bridges_10_10_0_2" src="https://github.com/user-attachments/assets/be5fbf4f-f183-4af9-99cb-ae82418ca524" />
+
 
