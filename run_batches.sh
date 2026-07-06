@@ -1,64 +1,65 @@
 #!/bin/bash
 
-# simulation_venv/bin/python src/main.py data/ring.txt 3 > output.txt
-
 DATASET_LIST=(
-#"data/as19971108-new.txt"
-#"data/cit-HepPh-pruned-new.txt"
+"data/as19971108-new.txt"
+"data/cit-HepPh-pruned-new.txt"
 "data/cliques_less_bridges.txt"
-#"data/CollegeMsg.txt"
+"data/CollegeMsg.txt"
 "data/email-Eu-core-temporal-Dept2.txt"
-#"data/fb-forum.txt"
-"data/ring.txt"
+"data/fb-forum.txt"
+#"data/ring.txt"
 )
 
 DATASET_NAMES=(
-#"as19971108-new"
-#"cit-HepPh-pruned-new"
+"as19971108-new"
+"cit-HepPh-pruned-new"
 "cliques_less_bridges"
-#"CollegeMsg"
+"CollegeMsg"
 "email-Eu-core-temporal-Dept2"
-#"fb-forum"
-"ring"
+"fb-forum"
+#"ring"
 )
 
 DATASET_NODE_BUDGETS=(
-    #1 350 700
-    #1 7 15
-    1 2 2
-    #1 25 50
-    1 10 10
-    #1 7 15
-    1 15 15
+    30 30
+    17 17
+    4 4
+    50 50
+    19 19
+    17 17
+#    50 50
 )
 
 DATASET_TIMES_MAIN=(
-    #10 10 10
-    #10 10 10
-    10 10 100
-    #10 10 10
-    10 10 100
-    #10 10 10
-    10 10 100
+    10 10
+    10 10
+    10 10
+    10 10
+    10 10
+    10 10
+#    10 10
 )
 
 DATASET_NO_SIMULATION_PER_RUN=(
-    #10 10 10
-    #10 10 10
-    10 10 10
-    #10 10 10
-    10 10 10
-    #10 10 10
-    10 10 10
+    10 100
+    10 100
+    10 100
+    10 100
+    10 100
+    10 100
+#    10 100
 )
 
-# For each dataset, run the simulation with the three associated seedset budgets
-for i in {0..1}
+# For each dataset, run the simulation with the three associated attackset budgets
+for i in {0..5}
 do
-    for j in {0..2}
+    for j in {0..1}
     do
-        echo "Running simulation for ${DATASET_LIST[i]} with seedset budget ${DATASET_NODE_BUDGETS[i*3+j]} (times_main=${DATASET_TIMES_MAIN[i*3+j]}, no_simulations_per_run=${DATASET_NO_SIMULATION_PER_RUN[i*3+j]})"
-        simulation_venv/bin/python src/main.py ${DATASET_LIST[i]} ${DATASET_NODE_BUDGETS[i*3+j]} ${DATASET_TIMES_MAIN[i*3+j]} ${DATASET_NO_SIMULATION_PER_RUN[i*3+j]} > output2/output_${DATASET_NAMES[i]}_nodebudget${DATASET_NODE_BUDGETS[i*3+j]}_timesmain${DATASET_TIMES_MAIN[i*3+j]}_times${DATASET_NO_SIMULATION_PER_RUN[i*3+j]}.txt
+        for probability in 0.2 0.4 0.8
+            do
+                echo "Running simulation for ${DATASET_LIST[i]} with attackset budget ${DATASET_NODE_BUDGETS[i*2+j]}, times_main=${DATASET_TIMES_MAIN[i*2+j]}, t_infection=${DATASET_NO_SIMULATION_PER_RUN[i*2+j]}, probability=${probability}"
+                python src/main.py ${DATASET_LIST[i]} ${DATASET_NODE_BUDGETS[i*2+j]} ${DATASET_TIMES_MAIN[i*2+j]} ${DATASET_NO_SIMULATION_PER_RUN[i*2+j]} $probability > output/output_${DATASET_NAMES[i]}_attackset${DATASET_NODE_BUDGETS[i*2+j]}_tmain${DATASET_TIMES_MAIN[i*2+j]}_tinfection${DATASET_NO_SIMULATION_PER_RUN[i*2+j]}_p${probability}.txt
+            done
     done
 done
 
