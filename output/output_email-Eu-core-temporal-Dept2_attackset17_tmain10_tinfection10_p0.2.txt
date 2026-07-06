@@ -1,14 +1,15 @@
 Plot saved as output/plot_email-Eu-core-temporal-Dept2_10_10_0_2.png
 
 --------------- Influence Spread statistics with the different methods ---------------
+average number of infected nodes with no attack set employed: 131.16000000000003
 subtrees mean, variance, lower bound and upper bound:
-106.96 0.8826666666666707 106.2879197439296 107.63208025607038
+110.02000000000001 0.5195555555555561 109.50436929539622 110.5356307046038
 centrality mean, variance, lower bound and upper bound:
-109.8 0.5399999999999998 109.27432217890573 110.32567782109426
+112.88 0.544000000000002 112.35237881619271 113.40762118380728
 random mean, variance, lower bound and upper bound:
-114.33 2.7712222222222254 113.13914618963457 115.52085381036542
+117.08 4.301777777777769 115.59629773381934 118.56370226618066
 
 ---- Improvement in graph resistance with the different methods (lower is better) ----
-Subtree improvement: 0.8161288769638221
-Centrality improvement: 0.8378037333860657
-Random improvement: 0.8723927086691944
+Subtree improvement: 0.8388525022262158
+Centrality improvement: 0.8606662489076925
+Random improvement: 0.8926838786304835

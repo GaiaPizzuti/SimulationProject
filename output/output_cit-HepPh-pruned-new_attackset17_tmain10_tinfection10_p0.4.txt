@@ -1,6 +1,7 @@
 Plot saved as output/plot_cit-HepPh-pruned-new_10_10_0_4.png
 
 --------------- Influence Spread statistics with the different methods ---------------
+average number of infected nodes with no attack set employed: 10.42
 subtrees mean, variance, lower bound and upper bound:
 3.5099999999999993 1.121 2.7525995122779614 4.267400487722037
 centrality mean, variance, lower bound and upper bound:

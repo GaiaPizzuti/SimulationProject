@@ -1,6 +1,7 @@
 Plot saved as output/plot_cliques_less_bridges_100_10_0_2.png
 
 --------------- Influence Spread statistics with the different methods ---------------
+average number of infected nodes with no attack set employed: 20.347
 subtrees mean, variance, lower bound and upper bound:
 10.919 0.5135211111111113 10.406372470435475 11.431627529564526
 centrality mean, variance, lower bound and upper bound:

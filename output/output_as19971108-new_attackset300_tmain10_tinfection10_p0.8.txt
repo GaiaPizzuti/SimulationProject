@@ -1,14 +1,15 @@
 Plot saved as output/plot_as19971108-new_10_10_0_8.png
 
 --------------- Influence Spread statistics with the different methods ---------------
+average number of infected nodes with no attack set employed: 3014.78
 subtrees mean, variance, lower bound and upper bound:
-2679.42 27024.139555555546 2561.822331455408 2797.017668544592
+2652.4399999999996 17271.002666666656 2558.4283771228534 2746.451622877146
 centrality mean, variance, lower bound and upper bound:
-2084.8100000000004 0.04322222222222849 2084.661277622305 2084.9587223776957
+583.71 0.05211111111110828 583.546699339703 583.8733006602971
 random mean, variance, lower bound and upper bound:
-2973.4300000000003 129.43122222222252 2965.291538744904 2981.5684612550967
+2579.13 2323.102333333335 2544.6508187315662 2613.609181268434
 
 ---- Improvement in graph resistance with the different methods (lower is better) ----
-Subtree improvement: 0.8887381408488737
-Centrality improvement: 0.6915113811277565
-Random improvement: 0.9862580699073717
+Subtree improvement: 0.8798127954485901
+Centrality improvement: 0.19361612061775052
+Random improvement: 0.8554954772553879
